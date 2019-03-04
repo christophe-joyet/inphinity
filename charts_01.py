@@ -92,8 +92,8 @@ data_name.append('Others')
 data_value.append(0)
 
 for specie in specie_dic:
-        #keep only specie with more than 30 strain
-        if(specie_dic[specie] > 30):
+        #keep only specie with more than 50 strain
+        if(specie_dic[specie] > 50):
                 data_name.append(SpecieJson.getByID(specie).designation)
                 data_value.append(specie_dic[specie])
         else:
