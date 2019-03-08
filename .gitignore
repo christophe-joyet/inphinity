@@ -474,3 +474,5 @@ ASALocalRun/
 *.ini
 .vs/inphinity/v15/.suo
 *.sqlite
+.vs/slnx.sqlite
+*.sqlite

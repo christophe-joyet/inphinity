@@ -9,7 +9,7 @@ class ContigSchema(Schema):
     ..note:: see marshmallow API
     """
     id = fields.Int()
-    id_db_online = fields.Str()
+    id_db_online = fields.Str(required=False, allow_none=True)
     sequence_DNA = fields.Str()
     fasta_head = fields.Str()
     organism = fields.Int()

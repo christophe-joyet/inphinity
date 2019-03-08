@@ -34,10 +34,10 @@ class CoupleJson(object):
         Initialization of the class
 
         :param id: id of the couple
-        :param interaction_type: type of the interaction (between 0 and 4)
+        :param interaction_type: type of the interaction (True or False)
         :param bacteriophage_id: ID of the bacteriophage
         :param bacterium_id: ID of the bacterium
-        :param level_id: level of the interaction (in terms of taxonomy)
+        :param level_id: level of the interaction (in terms of taxonomy) (between 0 and 4)
         :param person_responsible_id: ID of the person who has inserted the couple
         :param source_data_id: ID of the source where you know the couple
         :param validity_id: ID of the couple validity (verified, in vivo, generated,...)

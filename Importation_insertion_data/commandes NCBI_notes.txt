@@ -1,0 +1,54 @@
+Pour les bactéries c'est le top
+
+Obtenir la classification de la bactérie (famille, genre,...)
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequences&id=294083570&rettype=native&retmode=xml
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequence&id=294083570&rettype=native&retmode=xml
+
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequences&id=NC_007491&rettype=native&retmode=xml
+
+Analysez tags
+<BinomialOrgName>
+    <BinomialOrgName_genus>Arthrobacter</BinomialOrgName_genus>
+    <BinomialOrgName_species>sp. ATCC 21022</BinomialOrgName_species>
+</BinomialOrgName>
+
+ET
+
+<Object-id>
+    <Object-id_id>1771959</Object-id_id>
+</Object-id>
+
+
+Obtenire toute l'information de la bactérie
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=NC_014010&rettype=native&retmode=xml
+
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=taxonomy&id=NC_009481&rettype=native&retmode=xml
+
+Tout est là
+<LineageEx>...</LineageEx>
+
+
+Obterni FASTA du whole Genome
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=Nucleotide&id=110681940&rettype=fasta&retmode=text
+
+Obtenire FASTA proteines:
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequences&id=110681940&rettype=fasta_cds_aa&retmode=text
+
+Obtenir FASTA ADN par proteines
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequences&id=983715900&rettype=fasta_cds_na&retmode=text
+
+
+
+TEST
+
+
+https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=sequences&id=983719795&rettype=fasta&retmode=text
+
+

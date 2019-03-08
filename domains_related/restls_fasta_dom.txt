@@ -1,0 +1,119 @@
+# hmmscan :: search sequence(s) against a profile database
+# HMMER 3.2.1 (June 2018); http://hmmer.org/
+# Copyright (C) 2018 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# query sequence file:             fasta_prot.faa
+# target HMM database:             Pfam-A.hmm
+# prefer accessions over names:    yes
+# show alignments in output:       no
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Query:       No_head  [L=646]
+Scores for complete sequence (score includes all domains):
+   --- full sequence ---   --- best 1 domain ---    -#dom-
+    E-value  score  bias    E-value  score  bias    exp  N  Model      Description
+    ------- ------ -----    ------- ------ -----   ---- --  --------   -----------
+    1.7e-18   67.8   3.3    1.7e-18   67.8   3.3    3.1  1  PF13476.6   AAA domain
+    5.6e-12   45.6  11.5    3.4e-11   43.0  11.5    2.1  1  PF02463.19  RecF/RecN/SMC N terminal domain
+     0.0026   17.5   0.4      0.016   14.9   0.1    2.5  2  PF13555.6   P-loop containing region of AAA domain
+     0.0092   16.2   0.0      0.029   14.6   0.0    1.9  1  PF13558.6   Putative exonuclease SbcCD, C subunit
+  ------ inclusion threshold ------
+       0.04   14.4  15.8       0.16   12.5   5.9    4.1  3  PF00005.27  ABC transporter
+      0.049   13.7   1.5        0.6   10.2   0.2    2.6  2  PF13037.6   Domain of unknown function (DUF3898)
+      0.077   12.8   0.2        4.9    6.9   0.1    2.5  2  PF13304.6   AAA domain, putative AbiEii toxin, Type IV TA sys
+       0.15   12.2   1.0       0.41   10.8   0.8    1.8  1  PF15731.5   Antitoxin component of bacterial toxin-antitoxin 
+       0.22   11.0  14.3       0.11   12.0   5.1    3.0  3  PF04799.13  fzo-like conserved region
+       0.23   11.0   0.0       0.23   11.0   0.0    3.4  3  PF13514.6   AAA domain
+       0.36   11.0   3.7        1.5    9.0   0.4    2.8  2  PF18363.1   Phosphoinositide phosphatase insertion domain
+        3.7    7.5  10.9       0.52   10.2   0.7    2.6  2  PF01105.24  emp24/gp25L/p24 family/GOLD
+
+
+Domain annotation for each model:
+>> PF13476.6  AAA domain
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   67.8   3.3   1.2e-21   1.7e-18       3     197 ..       7     278 ..       5     323 .. 0.69
+
+>> PF02463.19  RecF/RecN/SMC N terminal domain
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   43.0  11.5   2.3e-14   3.4e-11      32     218 ..      41     635 ..      39     637 .. 0.92
+
+>> PF13555.6  P-loop containing region of AAA domain
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   14.9   0.1   1.1e-05     0.016      11      50 ..      13      61 ..       5      66 .. 0.73
+   2 ?   -3.4   0.0       5.7   8.5e+03      35      43 ..     203     211 ..     203     213 .. 0.82
+
+>> PF13558.6  Putative exonuclease SbcCD, C subunit
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 !   14.6   0.0     2e-05     0.029      28      88 ..     543     600 ..     527     602 .. 0.83
+
+>> PF00005.27  ABC transporter
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    5.0   0.0     0.022        33      20      33 ..      42      55 ..      41     129 .. 0.85
+   2 ?   -1.7   0.6       2.6   3.9e+03      54      75 ..     259     280 ..     190     324 .. 0.60
+   3 ?   12.5   5.9    0.0001      0.16      33     127 ..     353     566 ..     348     570 .. 0.73
+
+>> PF13037.6  Domain of unknown function (DUF3898)
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    1.5   0.1      0.21   3.1e+02      43      81 ..     197     235 ..     168     242 .. 0.80
+   2 ?   10.2   0.2    0.0004       0.6      12      57 ..     266     311 ..     256     321 .. 0.85
+
+>> PF13304.6  AAA domain, putative AbiEii toxin, Type IV TA system
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    3.7   0.0     0.031        46       8      22 ..      42      56 ..      41     107 .. 0.84
+   2 ?    6.9   0.1    0.0033       4.9     125     301 ..     371     619 ..     337     621 .. 0.65
+
+>> PF15731.5  Antitoxin component of bacterial toxin-antitoxin system, MqsA
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   10.8   0.8   0.00027      0.41      30      88 ..     322     383 ..     299     387 .. 0.81
+
+>> PF04799.13  fzo-like conserved region
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    4.4   0.6     0.016        24     118     139 ..     263     284 ..     223     319 .. 0.82
+   2 ?   12.0   5.1   7.3e-05      0.11     107     150 ..     366     411 ..     334     421 .. 0.75
+   3 ?   -1.8   0.2       1.3     2e+03     107     144 ..     418     456 ..     402     469 .. 0.64
+
+>> PF13514.6  AAA domain
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   11.0   0.0   0.00015      0.23       1     103 [.       1     113 [.       1     136 [. 0.69
+   2 ?   -0.9   0.2      0.67     1e+03     176     203 ..     263     289 ..     247     309 .. 0.74
+   3 ?   -2.4   2.3         2     3e+03     170     189 ..     388     399 ..     350     437 .. 0.50
+
+>> PF18363.1  Phosphoinositide phosphatase insertion domain
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?    1.6   0.2      0.21   3.1e+02      19      59 ..     255     295 ..     244     321 .. 0.80
+   2 ?    9.0   0.4     0.001       1.5      20      77 ..     346     403 ..     332     422 .. 0.78
+
+>> PF01105.24  emp24/gp25L/p24 family/GOLD
+   #    score  bias  c-Evalue  i-Evalue hmmfrom  hmm to    alifrom  ali to    envfrom  env to     acc
+ ---   ------ ----- --------- --------- ------- -------    ------- -------    ------- -------    ----
+   1 ?   10.2   0.7   0.00035      0.52      89     157 ..     224     303 ..     198     306 .. 0.83
+   2 ?    0.8   3.8      0.26   3.9e+02     103     146 ..     370     416 ..     342     425 .. 0.74
+
+
+
+Internal pipeline statistics summary:
+-------------------------------------
+Query sequence(s):                         1  (646 residues searched)
+Target model(s):                       17929  (3037991 nodes)
+Passed MSV filter:                      2612  (0.145686); expected 358.6 (0.02)
+Passed bias filter:                      717  (0.0399911); expected 358.6 (0.02)
+Passed Vit filter:                        90  (0.0050198); expected 17.9 (0.001)
+Passed Fwd filter:                        31  (0.00172904); expected 0.2 (1e-05)
+Initial search space (Z):              17929  [actual number of targets]
+Domain search space  (domZ):              12  [number of targets reported over threshold]
+# CPU time: 1.38u 0.16s 00:00:01.53 Elapsed: 00:00:00.71
+# Mc/sec: 2746.83
+//
+[ok]
