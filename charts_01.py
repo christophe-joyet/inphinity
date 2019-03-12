@@ -293,7 +293,32 @@ for source_data, number_of_bacterie in source_data_dictionnary.items():
 #===================================================================================
 
 #dictionnary : public couples (couples where source_data = NCBI or PhagesDB)
-public_couples_dictionnary = {}
+public_couples = []
 
+#ID of public database
+NCBI = 1
+PhagesDB = 2
+#ID of taxonomy
+Strain = 1
+Specie = 2
+Genus = 3
+Family = 4
+
+#add the public couple in the list
 for couple in list_of_couples:
-        if couple 
+         if couple.source_data == NCBI or couple.source_data == PhagesDB:
+                public_couples.append(couple) 
+
+taxonomie_dictionnary = {Strain: 0, Specie:0, Genus:0, Family:0}
+
+#taxonomie repartition
+for couple in public_couples:
+        taxonomie_dictionnary[couple.level] += 1
+        
+#For the charts
+number_of_bacterie_tab3 = []
+taxonomie_name = ['Strain', 'Specie', 'Genus', 'Family']
+for taxonomie, number_of_bacterie in taxonomie_dictionnary.items():
+        #take only specie with more than one bacterie
+        number_of_bacterie_tab3.append(number_of_bacterie)
+        taxonomie_dictionnary[couple.level] += 1
