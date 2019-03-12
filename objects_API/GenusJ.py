@@ -75,3 +75,20 @@ class GenusJson(object):
         schema = GenusSchema()
         results = schema.load(resultsCreation)
         return results[0]
+
+    def getByID(id_genus:int):
+
+        """
+        get a Genus given its id
+
+        :param id_genus: id of the genus that it will be returned
+
+        :type id_genus: int
+
+        :return: a json of the genus 
+        :rtype: GenusJson
+        """
+        genus = GenusAPI().get_by_id(id_genus)
+        schema = GenusSchema()
+        results = schema.load(genus, many=False)
+        return results

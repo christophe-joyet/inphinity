@@ -74,3 +74,20 @@ class FamilyJson(object):
         schema = FamilySchema()
         results = schema.load(resultsCreation)
         return results[0]
+
+    def getByID(id_family:int):
+
+        """
+        get a Family given its id
+
+        :param id_family: id of the Family that it will be returned
+
+        :type id_family: int
+
+        :return: a json of the family 
+        :rtype: FamilyJson
+        """
+        family = FamilyAPI().get_by_id(id_family)
+        schema = FamilySchema()
+        results = schema.load(family, many=False)
+        return results
