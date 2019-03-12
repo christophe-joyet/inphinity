@@ -9,6 +9,7 @@ from objects_API.StrainJ import StrainJson
 from objects_API.SpecieJ import SpecieJson
 from objects_API.GenusJ import GenusJson
 from objects_API.FamilyJ import FamilyJson
+from objects_API.SourceDataJ import SourceDataJson
 
 conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
@@ -30,95 +31,132 @@ def getAllOfFamily():
         list_family = FamilyJson.getAllAPI()
         return list_family
 
-#for the plot
-data_name  = []
-data_value = []
-fig_1, axs = plt.subplots(1,1)
+def getAllOfSourceData():
+        list_source_data = SourceDataJson.getAllAPI()
+        return list_source_data
 
-print("Bacterium")
+#fig_1, axs = plt.subplots(1,1)
+fig, axs = plt.subplots(1,3, figsize=(40, 10))
+
+#get all couples in a list
 list_of_couples = getAllOfCouples()
+bacterie_found = 0
 
-#dictionnary bacterie_id : number of this bacterie in all couples
-bact_dic = {}
-
+#dictionnary {bacterie : nbr of bacteries}
+bacteries_dictionnary = {}
 for couple in list_of_couples:
-        #check if there is already the id of the bacterium in the dictionnary
-        if not couple.bacterium in bact_dic.keys():
-                #add the key-value : bacterie_id - number of this bacterie
-                bact_dic[couple.bacterium] = 0
-        #increase de number of the bacterie who has this id
-        bact_dic[couple.bacterium] += 1
+        bacterie_found = 0
+        for bacterie in bacteries_dictionnary.keys():
+                #check if there is already the id of the bacterium in the dictionnary
+                if couple.bacterium == bacterie.id:
+                        #increase de number of the bacterie whith this id
+                        bacteries_dictionnary[bacterie] += 1
+                        bacterie_found = 1
+                        break
+
+        #if we hadn't found the bacterie we add it in the dictionnary
+        if bacterie_found != 1 :
+               #add the key-value : bacterie
+               bacteries_dictionnary[BacteriumJson.getByID(couple.bacterium)] = 1
+
+#dictionnary {bacteriophage_id : nbr of bacteries}
+phages_dictionnary = {}
+for couple in list_of_couples:
+        #check if there is already the id of the phage in the dictionnary
+        if not couple.bacteriophage in phages_dictionnary.keys():
+                #add the key-value : pahges_id
+                phages_dictionnary[couple.bacteriophage] = 0
+        #increase de number of the phage whith this id
+        phages_dictionnary[couple.bacteriophage] += 1
+
+print("Number of different bacteries : ")
+print(len(bacteries_dictionnary))
+print("Number of different phages    : ")
+print(len(phages_dictionnary))
 
 print("Strain")
 
-#dictionnary strain_name : number of bacteries in this strain
-strain_dic = {}
-
-for bact_id in bact_dic.keys():
+#dictionnary {strain_name : number of bacteries in this strain}
+strain_dictionnary = {}
+strain_found = 0
+for bacterie in bacteries_dictionnary.keys():
         #get the strain designation from the bacterie
-        strain_id = BacteriumJson.getByID(bact_id).strain
-        if not strain_id in strain_dic:
-                #add the object strain in the dictionnary
-                strain_dic[strain_id] = 0
-        #add the number of the bacteries to the specific strain
-        strain_dic[strain_id] += bact_dic[bact_id]
-
-#For the plot
-data_name.append('Others')
-data_value.append(0)
-
-for strain in strain_dic:
-        #keep only strain with more than 50 bacteries
-        if(strain_dic[strain] > 50):
-                data_name.append(StrainJson.getByID(strain).designation)
-                data_value.append(strain_dic[strain])
-        else:
-                #add the value to the section 'Others'
-                data_value[0] += strain_dic[strain]
+        strain_id = bacterie.strain
+        for strain in strain_dictionnary.keys():
+                strain_found = 0
+                #check if there is already the id of the strain in the dictionnary
+                if strain_id == strain.id:
+                         #increase de number of the bacterie whith this id
+                                strain_dictionnary[strain] += 1
+                                strain_found = 1
+                                break
+        #if we hadn't found the bacterie we add it in the dictionnary
+        if strain_found != 1 :
+                #add the key-value : bacterie
+                strain_dictionnary[StrainJson.getByID(bacterie.strain)] = 1
         
-#display plot
-plt.title("Strains")
-plt.pie(data_value, labels=data_name, autopct='%1.1f%%', startangle=140)
-#plt.show()
+print(len(strain_dictionnary))
 
-print("Species")
+#dictionnary {strain_name : number of bacteries in this strain}
+specie_dictionnary = {}
+specie_found = 0
+for strain in strain_dictionnary.keys():
+        #get the strain designation from the bacterie
+        specie_id = strain.specie
+        for specie in specie_dictionnary.keys():
+                specie_found = 0
+                #check if there is already the id of the strain in the dictionnary
+                if specie_id == specie.id:
+                         #increase de number of the bacterie whith this id
+                                specie_dictionnary[specie] += 1
+                                specie_found = 1
+                                break
+        #if we hadn't found the bacterie we add it in the dictionnary
+        if specie_found != 1 :
+                #add the key-value : bacterie
+                specie_dictionnary[SpecieJson.getByID(strain.specie)] = 1
 
-specie_dic = {}
+print(len(specie_dictionnary)) 
 
-for strain_id in strain_dic:
-        #get the specie designation from the strain
-        specie_id = StrainJson.getByID(strain_id).specie
-        if not specie_id in specie_dic:
-                #add the object specie in the dictionnary
-                specie_dic[specie_id] = 0
-        #add the number of the bacteries to the specific specie
-        specie_dic[specie_id] += strain_dic[strain_id]
+#species repartition charts
+number_of_species_tab = []
+species_name = []
+for specie, number_of_species in specie_dictionnary.items():
+        #take only specie with more than one souche
+        if number_of_species > 1:
+                number_of_species_tab.append(number_of_species)
+                species_name.append(specie.designation)
 
-#For the plot
-fig_2, axs = plt.subplots(1,1)
-#reset
-data_name = []
-data_value = []
-data_name.append('Others')
-data_value.append(0)
+axs[0].set_title("Species repartition in couples")
+axs[0].pie(number_of_species_tab, labels=species_name, autopct='%1.0f%%', startangle=140)
 
-for specie in specie_dic:
-        #keep only specie with more than 50 strain
-        if(specie_dic[specie] > 50):
-                data_name.append(SpecieJson.getByID(specie).designation)
-                data_value.append(specie_dic[specie])
-        else:
-                #add the value to the section 'Others'
-                data_value[0] += specie_dic[specie]
-  
-#display plot
-plt.title("Species")
-plt.pie(data_value, labels=data_name, autopct='%1.1f%%', startangle=140)
-
-#plt.show()
+#===================================================================================
 
 print("Genus")
 
+#dictionnary {genus : number of species in this genus}
+genus_dictionnary = {}
+genus_found = 0
+
+for specie in specie_dictionnary.keys():
+        #get the strain designation from the bacterie
+        genus_id = specie.genus
+        for genus in genus_dictionnary.keys():
+                genus_found = 0
+                #check if there is already the id of the strain in the dictionnary
+                if genus_id == genus.id:
+                        #increase de number of the bacterie whith this id
+                        genus_dictionnary[genus] += 1
+                        genus_found = 1
+                        break
+        #if we hadn't found the bacterie we add it in the dictionnary
+        if genus_found != 1 :
+                #add the key-value : bacterie
+                genus_dictionnary[GenusJson.getByID(specie.genus)] = 1
+
+print(len(genus_dictionnary)) 
+
+'''
 genus_dic = {}
 genus_list = getAllOfGenus()
 genus_dic_list = []
@@ -139,23 +177,23 @@ for specie_id in specie_dic:
 #For the plot
 fig_3, axs = plt.subplots(1,1)
 #reset
-data_name = []
-data_value = []
-data_name.append('Others')
-data_value.append(0)
+names_for_charts = []
+values_for_charts = []
+names_for_charts.append('Others')
+values_for_charts.append(0)
 
 for genus_id in genus_dic:
         
         if(genus_dic[genus_id] > 50):
-                data_name.append(genus_dic_list[list(genus_dic.keys()).index(genus_id)].designation)
-                data_value.append(genus_dic[genus_id])
+                names_for_charts.append(genus_dic_list[list(genus_dic.keys()).index(genus_id)].designation)
+                values_for_charts.append(genus_dic[genus_id])
         else:
                 #add the value to the section 'Others'
-                data_value[0] += genus_dic[genus_id]
+                values_for_charts[0] += genus_dic[genus_id]
   
 #display plot
 plt.title("Genus")
-plt.pie(data_value, labels=data_name, autopct='%1.1f%%', startangle=140)
+plt.pie(values_for_charts, labels=names_for_charts, autopct='%1.1f%%', startangle=140)
 
 #plt.show()
 
@@ -185,22 +223,77 @@ for genus_id in genus_dic:
 #For the plot
 fig_4, axs = plt.subplots(1,1)
 #reset
-data_name = []
-data_value = []
-data_name.append('Others')
-data_value.append(0)
+names_for_charts = []
+values_for_charts = []
+names_for_charts.append('Others')
+values_for_charts.append(0)
 
 for family_id in family_dic:
         
         if(family_dic[family_id] > 50):
-                data_name.append(family_dic_list[list(family_dic.keys()).index(family_id)].designation)
-                data_value.append(family_dic[family_id])
+                names_for_charts.append(family_dic_list[list(family_dic.keys()).index(family_id)].designation)
+                values_for_charts.append(family_dic[family_id])
         else:
                 #add the value to the section 'Others'
-                data_value[0] += family_dic[family_id]
+                values_for_charts[0] += family_dic[family_id]
   
 #display plot
 plt.title("Family")
-plt.pie(data_value, labels=data_name, autopct='%1.1f%%', startangle=140)
+plt.pie(values_for_charts, labels=names_for_charts, autopct='%1.1f%%', startangle=140)
 
-plt.show()
+plt.show()'''
+#===================================================================================
+
+source_data_list = getAllOfSourceData()
+source_data_dictionnary = {}
+
+for source_data in source_data_list:
+        source_data_dictionnary[source_data] = 0
+        
+for bacterie in bacteries_dictionnary.keys():
+        #get the strain designation from the bacterie
+        source_data_id = bacterie.source_data
+        for source_data in source_data_dictionnary.keys():
+                if source_data_id == source_data.id:
+                        #increase de number of the bacteries managed by this source_data id
+                        source_data_dictionnary[source_data] += 1
+                        
+#For the charts
+number_of_bacterie_tab1 = []
+source_data_name1 = []
+for source_data, number_of_bacterie in source_data_dictionnary.items():
+        #take only specie with more than one bacterie
+        if number_of_bacterie > 0:
+                number_of_bacterie_tab1.append(number_of_bacterie)
+                source_data_name1.append(source_data.designation)
+
+#===================================================================================
+
+for source_data in source_data_list:
+        source_data_dictionnary[source_data]= 0
+
+for couple in list_of_couples:
+        #get the strain designation from the bacterie
+        source_data_id = couple.source_data
+        for source_data in source_data_dictionnary.keys():
+                source_data_found = 0
+                if source_data_id == source_data.id:
+                        #increase de number of the couple managed by this source_data id
+                                source_data_dictionnary[source_data] += 1  
+                            
+#For the charts
+number_of_bacterie_tab2 = []
+source_data_name2 = []
+for source_data, number_of_bacterie in source_data_dictionnary.items():
+        #take only specie with more than one bacterie
+        if number_of_bacterie > 0:
+                number_of_bacterie_tab2.append(number_of_bacterie)
+                source_data_name2.append(source_data.designation)
+
+#===================================================================================
+
+#dictionnary : public couples (couples where source_data = NCBI or PhagesDB)
+public_couples_dictionnary = {}
+
+for couple in list_of_couples:
+        if couple 
