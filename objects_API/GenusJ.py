@@ -74,7 +74,7 @@ class GenusJson(object):
         resultsCreation = GenusAPI().set_genus(jsonData = jsonFam.data)
         schema = GenusSchema()
         results = schema.load(resultsCreation)
-        return results[0]
+        return results
 
     def getByID(id_genus:int):
 

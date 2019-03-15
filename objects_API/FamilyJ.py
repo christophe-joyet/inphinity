@@ -59,7 +59,7 @@ class FamilyJson(object):
         list_family = FamilyAPI().get_all()
         schema = FamilySchema()
         results = schema.load(list_family, many=True)
-        return results[0]
+        return results
 
     def setFamily(self):
         """

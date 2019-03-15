@@ -55,7 +55,7 @@ class DomainInteractionSourceJson(object):
         list_domain_interaction_source = DomainInteractionSourceAPI().get_all()
         schema = DomainInteractionSourceSchema()
         results = schema.load(list_domain_interaction_source, many=True)
-        return results[0]
+        return results
 
     def setDomainInteractionSource(self):
         """

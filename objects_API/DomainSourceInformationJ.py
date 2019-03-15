@@ -52,7 +52,7 @@ class DomainSourceInformationJson(object):
         list_domain_source_information = DomainSourceInformationAPI().get_all()
         schema = DomainSourceInformationSchema()
         results = schema.load(list_domain_source_information, many=True)
-        return results[0]
+        return results
 
     def setDomainSourceInformation(self):
         """

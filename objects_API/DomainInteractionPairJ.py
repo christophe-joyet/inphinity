@@ -57,7 +57,7 @@ class DomainInteractionPairJson(object):
         list_domain_interaction_pair = DomainInteractionPairAPI().get_all()
         schema = DomainInteractionPairSchema()
         results = schema.load(list_domain_interaction_pair, many=True)
-        return results[0]
+        return results
 
     def setDomainInteractionPair(self):
         """
