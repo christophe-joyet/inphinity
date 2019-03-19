@@ -13,7 +13,7 @@ class CoupleSchema(Schema):
     id = fields.Int()
     bacterium = fields.Int()
     bacteriophage = fields.Int()
-    interaction_type = fields.Int()
+    interaction_type = fields.Bool()
     level = fields.Int()
     lysis = fields.Int(required=False, allow_none=True)
     source_data = fields.Int()
@@ -73,7 +73,7 @@ class CoupleJson(object):
         list_couple = CoupleAPI().get_all()
         schema = CoupleSchema()
         results = schema.load(list_couple, many=True)
-        return results[0]
+        return results
 
 
     def setCouple(self):
