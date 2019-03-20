@@ -60,7 +60,7 @@ class GenusJson(object):
         list_genus = GenusAPI().get_all()
         schema = GenusSchema()
         results = schema.load(list_genus, many=True)
-        return results[0]
+        return results
 
     def setGenus(self):
         """

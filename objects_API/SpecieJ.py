@@ -61,7 +61,7 @@ class SpecieJson(object):
         list_specie = SpecieAPI().get_all()
         schema = SpecieSchema()
         results = schema.load(list_specie, many=True)
-        return results[0]
+        return results
 
     def setSpecie(self):
         """

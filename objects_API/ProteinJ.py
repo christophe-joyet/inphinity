@@ -88,7 +88,7 @@ class ProteinJson(object):
         list_protein = ProteinAPI().get_all()
         schema = ProteinSchema()
         results = schema.load(list_protein, many=True)
-        return results[0]
+        return results
 
     def setProtein(self):
         """

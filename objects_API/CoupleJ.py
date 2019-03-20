@@ -75,6 +75,25 @@ class CoupleJson(object):
         results = schema.load(list_couple, many=True)
         return results
 
+    def getByBacteriumPhageIds(bacterium_id:int, phage_id:int):
+
+        """
+        get a couple given the id of the bacterium and phage
+
+        :param bact_id: If of the bacterium
+        :param phage_id: If of the bacteriophage
+
+        :type bact_id: int
+        :type phage_id: int
+
+        :return: a json of the couple
+        :rtype: CoupleJson
+        """
+        couple = CoupleAPI().getCoupleByBactPhageIds(bacterium_id, phage_id)
+        schema = CoupleSchema()
+        results = schema.load(couple, many=False)
+        return results[0]
+
 
     def setCouple(self):
         schema = CoupleSchema(only=['interaction_type','bacteriophage','bacterium','level','person_responsible','source_data','validity'])

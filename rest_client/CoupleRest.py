@@ -42,3 +42,22 @@ class CoupleAPI(object):
         jsonData = json.dumps(jsonData)
         result_post = PostRest(function = self.function, dataDict = jsonData).performRequest()
         return result_post
+
+    def getCoupleByBactPhageIds(self, bact_id:int, phage_id:int):
+        """
+        return a couple according the ids of the bacterium and phage
+
+        :param bact_id: If of the bacterium
+        :param phage_id: If of the bacteriophage
+
+        :type bact_id: int
+        :type phage_id: int
+
+        :return: json file with all the data
+        :rtype: string (json format)
+        """
+
+        self.function += 'organismsid/' + str(bact_id) + '/' + str(phage_id) + '/'
+
+        result_get = GetRest(function = self.function).performRequest()
+        return result_get

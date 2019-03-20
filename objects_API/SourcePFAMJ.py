@@ -53,7 +53,7 @@ class SourcePFAMJson(object):
         list_source_pfam = SourcePFAMAPI().get_all()
         schema = SourcePFAMSchema()
         results = schema.load(list_source_pfam, many=True)
-        return results[0]
+        return results
 
     def setSourcePFAM(self):
         """

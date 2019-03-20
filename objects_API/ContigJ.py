@@ -68,7 +68,7 @@ class ContigJson(object):
         list_contigs = ContigAPI().get_all()
         schema = ContigSchema()
         results = schema.load(list_contigs, many=True)
-        return results[0]
+        return results
 
     def setContig(self):
         """
