@@ -94,7 +94,7 @@ class GeneJson(object):
         list_genes = GeneAPI().get_all()
         schema = GeneSchema()
         results = schema.load(list_genes, many=True)
-        return results[0]
+        return results
 
     def setGene(self):
         """

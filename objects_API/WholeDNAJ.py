@@ -65,7 +65,7 @@ class WholeDNAJson(object):
         list_wholeDNA = WholeDNAAPI().get_all()
         schema = WholeDNASchema()
         results = schema.load(list_wholeDNA, many=True)
-        return results[0]
+        return results
 
     def setWholeDNA(self):
         """

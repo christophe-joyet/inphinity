@@ -54,7 +54,7 @@ class SourceDataJson(object):
         list_source_data = SourceDataAPI().get_all()
         schema = SourceDataSchema()
         results = schema.load(list_source_data, many=True)
-        return results[0]
+        return results
 
     def setSourceData(self):
         """

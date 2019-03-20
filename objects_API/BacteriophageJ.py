@@ -59,7 +59,7 @@ class BacteriophageJson(object):
         list_bacteriophages = BacteriophageAPI().get_all()
         schema = BacteriophageSchema()
         results = schema.load(list_bacteriophages, many=True)
-        return results[0]
+        return results
 
     def getByID(id_bacteriophage:int):
 

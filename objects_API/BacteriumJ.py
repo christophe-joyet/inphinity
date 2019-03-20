@@ -61,7 +61,7 @@ class BacteriumJson(object):
         list_bacteria = BacteriumAPI().get_all()
         schema = BacteriumSchema()
         results = schema.load(list_bacteria, many=True)
-        return results[0]
+        return results
 
     def setBacterium(self):
         """

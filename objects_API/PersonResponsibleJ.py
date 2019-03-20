@@ -52,7 +52,7 @@ class PersonResponsibleJson(object):
         list_person_responsible = PersonResponsibleAPI().get_all()
         schema = PersonResponsibleSchema()
         results = schema.load(list_person_responsible, many=True)
-        return results[0]
+        return results
 
     def setPersonResponsible(self):
         """

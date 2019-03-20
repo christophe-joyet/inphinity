@@ -76,7 +76,7 @@ class ProteinPFAMJson(object):
         list_protein_pfam = ProteinPFAMAPI().get_all()
         schema = ProteinPFAMSchema()
         results = schema.load(list_protein_pfam, many=True)
-        return results[0]
+        return results
 
     def setProteinPFAM(self):
         """
