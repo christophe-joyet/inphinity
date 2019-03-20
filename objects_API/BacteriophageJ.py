@@ -80,10 +80,10 @@ class BacteriophageJson(object):
 
     def setBacteriophage(self):
         """
-        set new bacterium
+        set new bacteriophage
 
-        :return: new bacterium completed with the id
-        :rtype: BacteriumJson
+        :return: new bacteriophage completed with the id
+        :rtype: BacteriophageJson
 
         """
 
@@ -99,7 +99,7 @@ class BacteriophageJson(object):
         """
         Verify if a bacteriophage exists according a designation
 
-        :param designation: accession number of the bacterium that you want to check the existence
+        :param designation: accession number of the bacteriophage that you want to check the existence
 
         :type designation: string
 
@@ -107,7 +107,7 @@ class BacteriophageJson(object):
         :rtype: boolean
         """
 
-        resultsCreation = BacteriophageAPI().setBacteriumExistsByAcc(acc_value = acc_value)
+        resultsCreation = BacteriophageAPI().getBacteriophageByAcc(acc_value = acc_value)
         bacteriophage_existence = resultsCreation['value']['bacteriophage_exists']
         return bacteriophage_existence
 
@@ -124,6 +124,23 @@ class BacteriophageJson(object):
         :rtype: BacteriophageJson
         """
         bacteriophage = BacteriophageAPI().getBacteriophageByDesignation(designation)
+        schema = BacteriophageSchema()
+        results = schema.load(bacteriophage, many=False)
+        return results[0]
+
+    def getByAccnumber(acc_number:str):
+
+        """
+        get a bacteriophage given its acc
+
+        :param acc_number: acc of the bacteriophage that it will be returned
+
+        :type acc_number: String
+
+        :return: a json of the bacteriophage
+        :rtype: BacteriophageJson
+        """
+        bacteriophage = BacteriophageAPI().getBacteriophageByAcc(acc_number)
         schema = BacteriophageSchema()
         results = schema.load(bacteriophage, many=False)
         return results[0]
