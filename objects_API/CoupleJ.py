@@ -73,7 +73,7 @@ class CoupleJson(object):
         list_couple = CoupleAPI().get_all()
         schema = CoupleSchema()
         results = schema.load(list_couple, many=True)
-        return results
+        return results[0]
 
     def getByBacteriumPhageIds(bacterium_id:int, phage_id:int):
 
@@ -109,4 +109,26 @@ class CoupleJson(object):
         resultsCouple = CoupleAPI().set_couple(jsonData = jsonCouple.data)
         schema = CoupleSchema()
         results = schema.load(resultsCouple)
+        return results[0]
+
+    def getCouplesByFilterParameter(dict_parameters:dict):
+        """
+        get a list of couples given a filters by fields E.G: dict['level']=1
+        return all couples with the level at 1
+
+        :param dict_parameters: dictionary that contain the fields and vaules to filter
+
+        :type dict_parameters: dictionary
+
+        :return: a json of the couple
+        :rtype: list[CoupleJson]
+        """
+        url_parameters = ''
+        for key_param in dict_parameters:
+            url_parameters += key_param + '=' + str(dict_parameters[key_param]) + '&'
+
+        url_parameters = url_parameters[:-1]
+        list_couple = CoupleAPI().getCouplesByParameters(url_parameters)
+        schema = CoupleSchema()
+        results = schema.load(list_couple, many=True)
         return results[0]

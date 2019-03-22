@@ -90,4 +90,4 @@ class FamilyJson(object):
         family = FamilyAPI().get_by_id(id_family)
         schema = FamilySchema()
         results = schema.load(family, many=False)
-        return results
+        return results[0]
