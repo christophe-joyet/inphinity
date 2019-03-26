@@ -19,32 +19,45 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
-#Constantes declarations
-
-#Lysis Type
-CLEAR_LYSIS = 5
-SEMI_CLEAR_LYSIS = 6
-OPAQUE_LYSIS = 7
-#dilution > 1e7
-CLEAR_LYSIS_1E7PLUS = 8
-SEMI_CLEAR_LYSIS_1E7PLUS = 10
-#dilution < 1e7
-CLEAR_LYSIS_1E7MINUS = 9
-SEMI_CLEAR_LYSIS_1E7MINUS = 11
-
-ALL_CLEAR_LYSIS = [CLEAR_LYSIS, CLEAR_LYSIS_1E7PLUS, CLEAR_LYSIS_1E7MINUS]
-ALL_SEMI_CLEAR_LYSIS = [SEMI_CLEAR_LYSIS, SEMI_CLEAR_LYSIS_1E7PLUS, SEMI_CLEAR_LYSIS_1E7MINUS]
-
-#==================================IMPLEMENTATION OF FUNCTIONS===============================
-
-#Draw network graph to show relations between phages and bacterium
 def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
+               is_png=True,
                node_size=1600, node_alpha=0.5,
-               node_text_size=12,
-               edge_alpha=0.6, edge_tickness=0.5,
+               node_text_size=8,
+               edge_alpha=0.5, edge_tickness=0.5,
                edge_text_pos=1.0,
-               text_font='sans-serif'):
+               text_font='sans-serif',
+               graph_name='network_graphic'):
+    """
+    draw a network graphics to bind phages with bacterium according to their lysis attribute
 
+    :param phages: list of phages
+    :param bacterium: list of bacterium
+    :param list_couple_lysis_type: list of couples
+    :param is_png: if true, save the graph as a png image
+    :param node_size: size of node
+    :param node_alpha: clearness of node_alpha
+    :param node_text_size: size of text in node
+    :param edge_alpha: clearness of node_alpha
+    :param edge_tickness: tichness of edge,
+    :param edge_text_pos: position of text
+    :param text_font: text font
+    :param graph_name: name of graphic
+
+    :type phages: list
+    :type bacterium: list
+    :type list_couple_lysis_type: list
+    :type is_png: boolean
+    :type node_size: int
+    :type node_size: int
+    :type node_alpha: int
+    :type node_text_size: int
+    :type edge_alpha: int
+    :type edge_tickness: int
+    :type edge_text_pos: int
+    :type text_font: string
+    :type graph_name: string
+
+    """
     fig, ax = plt.subplots(figsize=(200, 100))
 
     ax.set_title('Network between phages and bacteries', fontsize=16)
@@ -106,18 +119,32 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.set_xlabel('Green = Bacterium\n Red = Phages')
-    #plt.show()
-    #save graph in png
-    plt.savefig('network_CL_E7P_E7M.png')
+    
+    #save graph in png or display it
+    if is_png:
+        plt.savefig(graph_name + '.png')
+    else:
+        plt.show()
 
-#get all couples of the DB inphinity
 def getAllOfCouples():
+    """
+    get all couples of DB Inphinity
+
+    :return: list of couples
+    :rtype: list
+    """
     list_couples = CoupleJson.getAllAPI()
     return list_couples
 
-#get couples according to their lysis classification
+
 def getCouplesLysis(lysis_type):
-    
+    """
+    get all couples of DB Inphinity according with the lysis type
+
+    :return: list of couples
+    :rtype: list
+    """
+
     #verify if lysis is an int 
     if isinstance(lysis_type, int):
         tmp = lysis_type
@@ -137,6 +164,12 @@ def getCouplesLysis(lysis_type):
 
 #get couples dictionnary according to their taxonomie
 def getCouplesTaxonomie(couples_list:list):
+    """
+    get couples dictionnary according to their taxonomie
+
+    :return: list of couples
+    :rtype: list
+    """
     #Level interaction
     STRAIN = 1
     SPECIES = 2
@@ -150,8 +183,14 @@ def getCouplesTaxonomie(couples_list:list):
 
     return taxonomie_dictionnary
 
-#get accession number
+
 def getAccessionNumber(organism_list:list):
+    """
+    get accession number of an organism list
+
+    :return: list of organism
+    :rtype: list
+    """
     accessions_number_list = []
     for organism in organism_list:
         accessions_number_list.append(organism.acc_number)
@@ -174,33 +213,3 @@ def getAccessionNumber(organism_list:list):
         organism_definition_list.append()
 
         i += 1'''
-#==================================IMPLEMENTATION OF FUNCTIONS END===============================
-
-#choose what type of lysis we want
-lysis_type = CLEAR_LYSIS
-
-list_couples_lysis_type = []
-list_couples_lysis_type = getCouplesLysis(lysis_type)
-
-print("Nombre de couples clear lysis : " + str(len(list_couples_lysis_type)))
-
-#defining two correlation tables between phages and bacteriums
-phages = []
-bacterium = []
-
-for couple in list_couples_lysis_type:
-    phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation)
-    bacterium.append(BacteriumJson.getByID(couple.bacterium).acc_number)
-
-'''for couple in list_couples_lysis_type:
-    phages.append(couple.bacteriophage)
-    bacterium.append(couple.bacterium)'''
-
-print("phage" + str(len(phages)))
-print("bacterium" + str(len(bacterium)))
-
-couples_tax = getCouplesTaxonomie(list_couples_lysis_type)
-print(couples_tax)
-print(len(list_couples_lysis_type))
-# network graph
-draw_graph(phages, bacterium, list_couples_lysis_type)
