@@ -93,6 +93,6 @@ class SpecieJson(object):
         specie = SpecieAPI().get_by_id(id_specie)
         schema = SpecieSchema()
         results = schema.load(specie, many=False)
-        return results[0]
+        return results
 
 

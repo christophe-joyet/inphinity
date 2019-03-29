@@ -100,4 +100,4 @@ class ContigJson(object):
         resultsCreation = ContigAPI().getByOrganismID(organism_id = organism_id)
         schema = ContigSchema()
         results = schema.load(resultsCreation, many=True)
-        return results[0]
+        return results

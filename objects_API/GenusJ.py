@@ -91,4 +91,4 @@ class GenusJson(object):
         genus = GenusAPI().get_by_id(id_genus)
         schema = GenusSchema()
         results = schema.load(genus, many=False)
-        return results[0]
+        return results

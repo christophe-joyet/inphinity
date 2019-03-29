@@ -92,7 +92,7 @@ class StrainJson(object):
         strain = StrainAPI().get_by_id(id_strain)
         schema = StrainSchema()
         results = schema.load(strain, many=False)
-        return results[0]
+        return results
 
     def verifyStrainExistanceDesignationFkSpecie(designation:str, fk_specie:int):
         """

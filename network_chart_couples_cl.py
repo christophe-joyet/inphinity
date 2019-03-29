@@ -68,7 +68,7 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     nodes_bacterium = []
     
     for couple in list_couples_lysis_type:
-        couple_bacterium = BacteriumJson.getByID(couple.bacterium).acc_number
+        couple_bacterium = BacteriumJson.getByID(couple.bacterium).strain
         if not couple_bacterium in nodes_bacterium:
             nodes_bacterium.append(couple_bacterium)
         

@@ -97,4 +97,4 @@ class WholeDNAJson(object):
         resultsJson = WholeDNAAPI().getByOrganismID(organism_id = organism_id)
         schema = WholeDNASchema()
         results = schema.load(resultsJson, many=False)
-        return results[0]
+        return results

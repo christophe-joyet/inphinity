@@ -93,7 +93,7 @@ class BacteriumJson(object):
         bacterium = BacteriumAPI().get_by_id(id_bacterium)
         schema = BacteriumSchema()
         results = schema.load(bacterium, many=False)
-        return results[0]
+        return results
 
     def verifiyBacteriumExistanceByAcc(acc_value):
         """

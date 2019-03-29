@@ -76,7 +76,7 @@ class BacteriophageJson(object):
         bacteriophage = BacteriophageAPI().get_by_id(id_bacteriophage)
         schema = BacteriophageSchema()
         results = schema.load(bacteriophage, many=False)
-        return results[0]
+        return results
 
     def setBacteriophage(self):
         """
