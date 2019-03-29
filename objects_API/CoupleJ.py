@@ -73,7 +73,7 @@ class CoupleJson(object):
         list_couple = CoupleAPI().get_all()
         schema = CoupleSchema()
         results = schema.load(list_couple, many=True)
-        return results[0]
+        return results
 
     def getByBacteriumPhageIds(bacterium_id:int, phage_id:int):
 
