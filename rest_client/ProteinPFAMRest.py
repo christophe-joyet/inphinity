@@ -41,3 +41,21 @@ class ProteinPFAMAPI(object):
         jsonData = json.dumps(jsonData)
         result_post = PostRest(function = self.function, dataDict = jsonData).performRequest()
         return result_post
+
+    def getProteinsPFAMByParameters(self, url_parameters:str):
+        """
+        return a proteinsPfam according the parameters you send
+
+        :param url_parameters: string that contains the parameters values (that design the fields)
+
+        :type url_parameters: str
+
+        :return: json file with all the data
+        :rtype: string (json format)
+        """
+
+
+        self.function += '?' + url_parameters
+
+        result_get = GetRest(function = self.function).performRequest()
+        return result_get
