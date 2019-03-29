@@ -183,6 +183,24 @@ def getCouplesTaxonomie(couples_list:list):
 
     return taxonomie_dictionnary
 
+def getCouplesInteraction(couples:list, interaction_type:bool):
+    """
+    get couples according to their interaction 
+    :param couple: list of couples
+    :param interaction: type of the interaction (True or False)
+
+    :type couple: CoupleJson
+    :type interaction_type: bool
+
+    :return: list of couples
+    :rtype: list
+    """
+    list_couple = []
+    for couple in couples:
+        if couple.interaction_type == interaction_type:
+            list_couple.append(couple)
+    
+    return list_couple
 
 def getAccessionNumber(organism_list:list):
     """
