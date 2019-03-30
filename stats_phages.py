@@ -4,25 +4,16 @@ import numpy as np
 import csv
 import network_chart_couples_cl as network
 from collections import Counter
+from collections import OrderedDict
 
 from configuration.configuration_api import ConfigurationAPI
 from rest_client.AuthenticationRest import AuthenticationAPI
 
 from objects_API.CoupleJ import CoupleJson
 from objects_API.ProteinJ import ProteinJson
-from objects_API.WholeDNAJ import WholeDNAJson
-from objects_API.ContigJ import ContigJson
-from objects_API.FamilyJ import FamilyJson
 from objects_API.BacteriophageJ import BacteriophageJson
 from objects_API.BacteriumJ import BacteriumJson
-from objects_API.PersonResponsibleJ import PersonResponsibleJson
-from objects_API.StrainJ import StrainJson
-from objects_API.SpecieJ import SpecieJson
-from objects_API.SourceDataJ import SourceDataJson
 from objects_API.OrganismJ import OrganismJson
-
-
-from objects_API.SourceDataJ import SourceDataJson
 
 conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
@@ -42,6 +33,7 @@ def getAllChemicalStructureOfAminoAcids(amino_acid:str):
     :rtype: dictionnary {atomium : occurence}
     """
     #source : https://www.britannica.com/science/amino-acid
+    #dict contains 20 proteins with their molecules
     molecule_amino_acid = { 'A':{
                                 'H' : 7,
                                 'N' : 1,
@@ -147,6 +139,8 @@ def getAllChemicalStructureOfAminoAcids(amino_acid:str):
     
     if amino_acid in molecule_amino_acid.keys():
         return molecule_amino_acid[amino_acid]
+    else:
+        return {'Unknow' : 1}
         
 def getAllAminoAcidForAProtein(protein:ProteinJson):
     """
@@ -159,17 +153,20 @@ def getAllAminoAcidForAProtein(protein:ProteinJson):
     :return: all the amino acids of the given protein
     :rtype: dictionnary {name amino acid : occurence}
     """
-    protein_AA_dict = {}
-    protein_seq_AA = protein.sequence_AA
-    for AA in protein_seq_AA:
-        if not AA in protein_AA_dict.keys():
-            protein_AA_dict[AA] = 1
+    #dictionnary {amino acid : occurence}
+    protein_amino_acid_dict = OrderedDict()
+    #get the sequence with the amino acid of the protein
+    sequence_of_amino_acid = protein.sequence_AA
+    #count all the amino acid in the sequence
+    for amino_acid in sequence_of_amino_acid:
+        if not amino_acid in protein_amino_acid_dict.keys():
+            protein_amino_acid_dict[amino_acid] = 1
         else:
-            protein_AA_dict[AA] += 1
+            protein_amino_acid_dict[amino_acid] += 1
 
-    return protein_AA_dict
+    return protein_amino_acid_dict
 
-def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool, get_mean_and_std:bool):
+def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool=False, get_mean_and_std:bool=False):
     """
     get all amino acid of a given phage
 
@@ -188,71 +185,93 @@ def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool, ge
     :rtype: dictionnary {name amino acid : occurence}
     """
     list_prot = ProteinJson.getByOrganismID(phage.id)
-    phage_AA_dict = {}
+    phage_amino_acid_dict = OrderedDict()
 
-    #get all amino acids of the phage
     #source : https://stackoverflow.com/questions/45713887/add-values-from-two-dictionaries
+    #get all amino acids of the phage
     for protein in list_prot:
-        protein_AA = getAllAminoAcidForAProtein(protein)
+        protein_amino_acids = getAllAminoAcidForAProtein(protein)
         #add values from two dictionnaries in one
-        phage_AA_dict = Counter(Counter(phage_AA_dict) + Counter(protein_AA))
-    
+        phage_amino_acid_dict = Counter(Counter(phage_amino_acid_dict) + Counter(protein_amino_acids))
+
     #calcul mean and std
     if get_mean_and_std == True:
-        phage_AA_dict['mean'] = calculMeanFromDict(phage_AA_dict)
-        phage_AA_dict['std'] = calculStdFromDict(phage_AA_dict)
+        mean = calculMeanFromDict(phage_amino_acid_dict)
+        std = calculStdFromDict(phage_amino_acid_dict)
     
     #conversion of the results in percentage
     if active_percentage == True:
-        total_AA = sum(phage_AA_dict.values())
-        for key, value in phage_AA_dict.items():
-            if key != 'std' and key != 'mean':
-                phage_AA_dict[key] = (value * 100) / total_AA
-   
-    return phage_AA_dict
-'''
-    def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:bool, get_mean_and_std:bool):
-        """
-        get all chemical structure for a phage
-
-        :param phage: phage object
-        :param active_percentage: provide result in percentage
-        :param get_mean_and_std: add mean and std in the dictionnary
-        
-        :type phage: BacteriophageJson
-        :type active_percentage: bool
-        :type get_mean_and_std: bool
-
-        :return: all the chemical strucure of the given phage
-        :rtype: dictionnary {name amino acid : occurence}
-        """
-        list_prot = ProteinJson.getByOrganismID(phage.id)
-        phage_AA_dict = getAllAminoAcidForAPhage(phage, False, False)
-        phage_chemical_struct_dict = {}
-
-        #get all amino acids of the phage
-        #source : https://stackoverflow.com/questions/45713887/add-values-from-two-dictionaries
-        for amino_acid, value in phage_AA_dict.items():
-            if not amino_acid in phage_chemical_struct_dict:
-                phage_chemical_struct_dict[amino_acid] = 
-            phage_chemical_struct_dict = getAllAminoAcidForAProtein(protein)
-            #add values from two dictionnaries in one
-            phage_chemical_struct_dict = Counter(Counter(phage_chemical_struct_dict) + Counter(phage_chemical_struct_dict))
-        
-        #calcul mean and std
-        if get_mean_and_std == True:
-            phage_chemical_struct_dict['mean'] = calculMeanFromDict(phage_chemical_struct_dict)
-            phage_chemical_struct_dict['std'] = calculStdFromDict(phage_chemical_struct_dict)
-        
-        #conversion of the results in percentage
-        if active_percentage == True:
-            total_atomium = sum(phage_chemical_struct_dict.values())
-            for key, value in phage_chemical_struct_dict.items():
-                if key != 'std' and key != 'mean':
-                    phage_chemical_struct_dict[key] = (value * 100) / total_atomium
+        converstionValuesInPercentage(phage_amino_acid_dict)
     
-        return phage_chemical_struct_dict
-'''
+    #add mean and std in dictionnary
+    if get_mean_and_std == True:
+        phage_amino_acid_dict['mean'] = mean
+        phage_amino_acid_dict['std'] = std
+
+    return phage_amino_acid_dict
+
+def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:bool=False, get_mean_and_std:bool=False):
+    """
+    get all chemical structure for a phage
+
+    :param phage: phage object
+    :param active_percentage: provide result in percentage
+    :param get_mean_and_std: add mean and std in the dictionnary
+    
+    :type phage: BacteriophageJson
+    :type active_percentage: bool
+    :type get_mean_and_std: bool
+
+    :return: all the chemical strucure of the given phage
+    :rtype: dictionnary {name amino acid : occurence}
+    """
+    phage_amino_acid_dict = getAllAminoAcidForAPhage(phage)
+    phage_chemical_struct_dict = OrderedDict()
+
+    #source : https://stackoverflow.com/questions/45713887/add-values-from-two-dictionaries
+    #get all amino acids of the phage
+    for amino_acid, number_of_amino_acid in phage_amino_acid_dict.items():
+        #get each molecule of the amino acid
+        molecule_dict = getAllChemicalStructureOfAminoAcids(amino_acid)
+        #add number of molecule to phage_chemical_struct_dict
+        for molecule, number_of_molecules in molecule_dict.items():
+            if not molecule in phage_chemical_struct_dict.keys():
+                phage_chemical_struct_dict[molecule] = number_of_amino_acid * number_of_molecules
+            else:
+                phage_chemical_struct_dict[molecule] += number_of_amino_acid * number_of_molecules
+        
+    #calcul mean and std
+    if get_mean_and_std == True:
+        mean = calculMeanFromDict(phage_chemical_struct_dict)
+        std = calculStdFromDict(phage_chemical_struct_dict)
+
+    #conversion of the results in percentage
+    if active_percentage == True:
+        converstionValuesInPercentage(phage_chemical_struct_dict)  
+    
+    #add mean and std in dictionnary
+    if get_mean_and_std == True:
+        phage_chemical_struct_dict['mean'] = mean
+        phage_chemical_struct_dict['std'] = std
+
+    return phage_chemical_struct_dict
+
+def converstionValuesInPercentage(dictionnary:dict):
+    """
+    convert all value of a dictionnary in percent
+
+    :param dictionnary: dictionnary
+
+    :type dictionnary: dict
+
+    :return: --
+    :rtype: --
+    """
+    total_value = sum(dictionnary.values())
+    for key, value in dictionnary.items():
+        dictionnary[key] = (value * 100) / total_value
+
+    
 def calculMeanFromDict(dictionnary:dict):
     """
     get mean value from a dictionnary
@@ -264,11 +283,10 @@ def calculMeanFromDict(dictionnary:dict):
     :return: mean of all value contained in dictionnary
     :rtype: float
     """
-    #get values from phage_AA_dict to calculate std and mean
+    #get values from phage_amino_acid_dict to calculate std and mean
     values = []
-    for key,value in dictionnary.items():
+    for value in dictionnary.values():
         values.append(value)
-
     return np.mean(values)
 
 def calculStdFromDict(dictionnary:dict):
@@ -282,16 +300,16 @@ def calculStdFromDict(dictionnary:dict):
     :return: std of all value contained in dictionnary
     :rtype: float
     """
-    #get values from phage_AA_dict to calculate std and mean
+    #get values from phage_amino_acid_dict to calculate std and mean
     values = []
-    for key,value in dictionnary.items():
+    for value in dictionnary.values():
         values.append(value)
     return np.std(values)
 
 #==============================================================================
 #==============================================================================
 
-#list_couple = network.getCouplesInteraction(CoupleJson.getAllAPI(), True)
+#list_couple = network.getCouplesInteraction(CoupleJson.getAllAPI(), interaction_type=True)
 list_couple = network.getCouplesLysis([5,8,9])
 list_phages = []
 for couple in list_couple:
@@ -300,13 +318,24 @@ for couple in list_couple:
 
 print("nombre de phages différents : " + str(len(list_phages)))
 
-list_AA = {}
+phages_amino_acids = OrderedDict()
 for couple in list_couple:
-    if not couple.bacteriophage in list_AA.keys():
-        phage_AA_dict = getAllAminoAcidForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=False, get_mean_and_std=True)
-        list_AA[couple.bacteriophage] = phage_AA_dict
+    if not couple.bacteriophage in phages_amino_acids.keys():
+        phage_amino_acid_dict = getAllAminoAcidForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=True, get_mean_and_std=True)
+        phages_amino_acids[couple.bacteriophage] = phage_amino_acid_dict
 
+print("amino_acids done")
+
+phages_molecules = OrderedDict()
+for couple in list_couple:
+    if not couple.bacteriophage in phages_molecules.keys():
+        phage_molecule_dict = getAllChemicalStructureForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=True, get_mean_and_std=True)
+        phages_molecules[couple.bacteriophage] = phage_molecule_dict
 
 #source : https://stackoverflow.com/questions/31436783/writing-dictionary-of-dictionaries-to-csv-file-in-a-particular-format
-df = pd.DataFrame.from_dict(data=list_AA, orient="index")
-df.to_csv("stats_phages_ALL_CL_number.csv")
+
+df1 = pd.DataFrame.from_dict(data=phages_amino_acids, orient="index")
+df1.to_csv("stats_phages_amino_acid_percent.csv")
+
+df2 = pd.DataFrame.from_dict(data=phages_molecules, orient="index")
+df2.to_csv("stats_phages_molecule_percent.csv")
