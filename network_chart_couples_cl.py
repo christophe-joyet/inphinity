@@ -11,6 +11,8 @@ from objects_API.CoupleJ import CoupleJson
 from objects_API.BacteriumJ import BacteriumJson
 from objects_API.OrganismJ import OrganismJson
 from objects_API.BacteriophageJ import BacteriophageJson
+from objects_API.StrainJ import StrainJson
+from objects_API.SpecieJ import SpecieJson
 
 from Bio import Entrez #to import data from GenBank
 Entrez.email = "christophe.joyet@heig-vd.ch"
@@ -67,10 +69,14 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     #get all different bacterium
     nodes_bacterium = []
     
+    #get the name of each bacterium (strain + species)
     for couple in list_couples_lysis_type:
-        couple_bacterium = BacteriumJson.getByID(couple.bacterium).strain
-        if not couple_bacterium in nodes_bacterium:
-            nodes_bacterium.append(couple_bacterium)
+        strain_id = BacteriumJson.getByID(couple.bacterium).strain
+        strain_designation = StrainJson.getByID(strain_id).designation
+        specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
+        bacterium_designation = specie_designation + '-' +  strain_designation
+        if not bacterium_designation in nodes_bacterium:
+            nodes_bacterium.append(bacterium_designation)
         
         #get phages' designation
         couple_bacteriophage = BacteriophageJson.getByID(couple.bacteriophage).designation
@@ -122,7 +128,7 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     
     #save graph in png or display it
     if is_png:
-        plt.savefig(graph_name + '.png')
+        plt.savefig('../../statistiques/NETWORK/' + graph_name + '.png')
     else:
         plt.show()
 
