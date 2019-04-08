@@ -2,9 +2,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import csv
+import os
 import network_chart_couples_cl as network
 from collections import Counter
 from collections import OrderedDict
+from scipy.stats import kurtosis
 
 from configuration.configuration_api import ConfigurationAPI
 from rest_client.AuthenticationRest import AuthenticationAPI
@@ -33,7 +35,7 @@ def getAllChemicalStructureOfAminoAcids(amino_acid:str):
     :rtype: dictionnary {atomium : occurence}
     """
     #source : https://www.britannica.com/science/amino-acid
-    #dict contains 20 proteins with their molecules
+    #dict contains 21 proteins with their molecules
     molecule_amino_acid = { 'A':{
                                 'H' : 7,
                                 'N' : 1,
@@ -135,7 +137,13 @@ def getAllChemicalStructureOfAminoAcids(amino_acid:str):
                                 'H' : 9,
                                 'N' : 3,
                                 'C' : 6,
-                                'O' : 2}}  
+                                'O' : 2},
+                            'U':{
+                                'H' : 7,
+                                'N' : 1,
+                                'C' : 3,
+                                'O' : 2,
+                                'Se': 1}}  
     
     if amino_acid in molecule_amino_acid.keys():
         return molecule_amino_acid[amino_acid]
@@ -166,19 +174,17 @@ def getAllAminoAcidForAProtein(protein:ProteinJson):
 
     return protein_amino_acid_dict
 
-def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool=False, get_mean_and_std:bool=False):
+def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool=False, get_features:bool=False):
     """
     get all amino acid of a given phage
 
     :param phage: phage object
     :param active_percentage: provide result in percentage
-    :param get_mean_and_std: add mean and std in the dictionnary
+    :param get_features: add mean and std in the dictionnary
     
-
-
     :type phage: BacteriophageJson
     :type active_percentage: bool
-    :type get_mean_and_std: bool
+    :type get_features: bool
 
 
     :return: all the amino acids of the given phage
@@ -195,32 +201,38 @@ def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool=Fal
         phage_amino_acid_dict = Counter(Counter(phage_amino_acid_dict) + Counter(protein_amino_acids))
 
     #calcul mean and std
-    if get_mean_and_std == True:
+    if get_features == True:
         mean = calculMeanFromDict(phage_amino_acid_dict)
+        med = calculMedianFromDict(phage_amino_acid_dict)
         std = calculStdFromDict(phage_amino_acid_dict)
+        var = calculVarianceFromDict(phage_amino_acid_dict)
+        kurt = calculKurtosisFromDict(phage_amino_acid_dict)
     
     #conversion of the results in percentage
     if active_percentage == True:
         converstionValuesInPercentage(phage_amino_acid_dict)
     
     #add mean and std in dictionnary
-    if get_mean_and_std == True:
-        phage_amino_acid_dict['mean'] = mean
-        phage_amino_acid_dict['std'] = std
+    if get_features == True:
+        phage_amino_acid_dict['P_AA_MEAN'] = mean
+        phage_amino_acid_dict['P_AA_MED'] = med
+        phage_amino_acid_dict['P_AA_STD'] = std
+        phage_amino_acid_dict['P_AA_VAR'] = var
+        phage_amino_acid_dict['P_AA_KURTOSIS'] = kurt
 
     return phage_amino_acid_dict
 
-def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:bool=False, get_mean_and_std:bool=False):
+def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:bool=False, get_features:bool=False):
     """
     get all chemical structure for a phage
 
     :param phage: phage object
     :param active_percentage: provide result in percentage
-    :param get_mean_and_std: add mean and std in the dictionnary
+    :param get_features: add mean and std in the dictionnary
     
     :type phage: BacteriophageJson
     :type active_percentage: bool
-    :type get_mean_and_std: bool
+    :type get_features: bool
 
     :return: all the chemical strucure of the given phage
     :rtype: dictionnary {name amino acid : occurence}
@@ -241,18 +253,24 @@ def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:
                 phage_chemical_struct_dict[molecule] += number_of_amino_acid * number_of_molecules
         
     #calcul mean and std
-    if get_mean_and_std == True:
+    if get_features == True:
         mean = calculMeanFromDict(phage_chemical_struct_dict)
+        med = calculMedianFromDict(phage_chemical_struct_dict)
         std = calculStdFromDict(phage_chemical_struct_dict)
+        var = calculVarianceFromDict(phage_chemical_struct_dict)
+        kurt = calculKurtosisFromDict(phage_chemical_struct_dict)
 
     #conversion of the results in percentage
     if active_percentage == True:
         converstionValuesInPercentage(phage_chemical_struct_dict)  
     
     #add mean and std in dictionnary
-    if get_mean_and_std == True:
-        phage_chemical_struct_dict['mean'] = mean
-        phage_chemical_struct_dict['std'] = std
+    if get_features == True:
+        phage_chemical_struct_dict['P_MOLECULES_MEAN'] = mean
+        phage_chemical_struct_dict['P_MOLECULES_MED'] = med
+        phage_chemical_struct_dict['P_MOLECULES_STD'] = std
+        phage_chemical_struct_dict['P_MOLECULES_VAR'] = var
+        phage_chemical_struct_dict['P_MOLECULES_KURTOSIS'] = kurt
 
     return phage_chemical_struct_dict
 
@@ -283,7 +301,6 @@ def calculMeanFromDict(dictionnary:dict):
     :return: mean of all value contained in dictionnary
     :rtype: float
     """
-    #get values from phage_amino_acid_dict to calculate std and mean
     values = []
     for value in dictionnary.values():
         values.append(value)
@@ -300,42 +317,92 @@ def calculStdFromDict(dictionnary:dict):
     :return: std of all value contained in dictionnary
     :rtype: float
     """
-    #get values from phage_amino_acid_dict to calculate std and mean
     values = []
     for value in dictionnary.values():
         values.append(value)
     return np.std(values)
 
+def calculVarianceFromDict(dictionnary:dict):
+    """
+    get variance value from a dictionnary
+
+    :param dictionnary: dictionnary
+
+    :type dictionnary: dict
+
+    :return: variance of all value contained in dictionnary
+    :rtype: float
+    """
+    values = []
+    for value in dictionnary.values():
+        values.append(value)
+    return np.var(values)
+
+def calculKurtosisFromDict(dictionnary:dict):
+    """
+    get kurtosis value from a dictionnary
+
+    :param dictionnary: dictionnary
+
+    :type dictionnary: dict
+
+    :return: kurtosis of all value contained in dictionnary
+    :rtype: float
+    """
+    values = []
+    for value in dictionnary.values():
+        values.append(value)
+    return kurtosis(values)
+
+def calculMedianFromDict(dictionnary:dict):
+    """
+    get median value from a dictionnary
+
+    :param dictionnary: dictionnary
+
+    :type dictionnary: dict
+
+    get median value from a dictionnary
+    :return: kurtosis of all value contained in dictionnary
+    :rtype: float
+    """
+    values = []
+    for value in dictionnary.values():
+        values.append(value)
+    return np.median(values)
+        
 #==============================================================================
 #==============================================================================
 
 #list_couple = network.getCouplesInteraction(CoupleJson.getAllAPI(), interaction_type=True)
-list_couple = network.getCouplesLysis([5,8,9])
+list_couple = network.getCouplesLysis([5, 8, 9])
 list_phages = []
 for couple in list_couple:
     if not couple.bacteriophage in list_phages:
         list_phages.append(couple.bacteriophage)
 
 print("nombre de phages différents : " + str(len(list_phages)))
-
+#Supprimer pour inverser
+#'''
 phages_amino_acids = OrderedDict()
 for couple in list_couple:
     if not couple.bacteriophage in phages_amino_acids.keys():
-        phage_amino_acid_dict = getAllAminoAcidForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=True, get_mean_and_std=True)
+        phage_amino_acid_dict = getAllAminoAcidForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=True, get_features=True)
         phages_amino_acids[couple.bacteriophage] = phage_amino_acid_dict
 
 print("amino_acids done")
-
+'''
 phages_molecules = OrderedDict()
 for couple in list_couple:
     if not couple.bacteriophage in phages_molecules.keys():
-        phage_molecule_dict = getAllChemicalStructureForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=True, get_mean_and_std=True)
+        phage_molecule_dict = getAllChemicalStructureForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=True, get_features=True)
         phages_molecules[couple.bacteriophage] = phage_molecule_dict
 
 #source : https://stackoverflow.com/questions/31436783/writing-dictionary-of-dictionaries-to-csv-file-in-a-particular-format
-
+'''
 df1 = pd.DataFrame.from_dict(data=phages_amino_acids, orient="index")
-df1.to_csv("stats_phages_amino_acid_percent.csv")
-
+df1.to_csv(os.path.join('../../statistiques/CSV/', r"fichier_test.csv"))
+'''
 df2 = pd.DataFrame.from_dict(data=phages_molecules, orient="index")
-df2.to_csv("stats_phages_molecule_percent.csv")
+df2.to_csv(os.path.join('../../statistiques/CSV/', r"fichier_test.csv"))
+'''
