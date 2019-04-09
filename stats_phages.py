@@ -6,7 +6,7 @@ import os
 import network_chart_couples_cl as network
 from collections import Counter
 from collections import OrderedDict
-from scipy.stats import kurtosis
+from scipy.stats import kurtosis, skew
 
 from configuration.configuration_api import ConfigurationAPI
 from rest_client.AuthenticationRest import AuthenticationAPI
@@ -206,6 +206,7 @@ def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool=Fal
         med = calculMedianFromDict(phage_amino_acid_dict)
         std = calculStdFromDict(phage_amino_acid_dict)
         var = calculVarianceFromDict(phage_amino_acid_dict)
+        skewness = calculSkewnessFromDict(phage_amino_acid_dict)
         kurt = calculKurtosisFromDict(phage_amino_acid_dict)
     
     #conversion of the results in percentage
@@ -218,6 +219,7 @@ def getAllAminoAcidForAPhage(phage:BacteriophageJson, active_percentage:bool=Fal
         phage_amino_acid_dict['P_AA_MED'] = med
         phage_amino_acid_dict['P_AA_STD'] = std
         phage_amino_acid_dict['P_AA_VAR'] = var
+        phage_amino_acid_dict['P_AA_SKEWNESS'] = skewness
         phage_amino_acid_dict['P_AA_KURTOSIS'] = kurt
 
     return phage_amino_acid_dict
@@ -258,6 +260,7 @@ def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:
         med = calculMedianFromDict(phage_chemical_struct_dict)
         std = calculStdFromDict(phage_chemical_struct_dict)
         var = calculVarianceFromDict(phage_chemical_struct_dict)
+        skewness = calculSkewnessFromDict(phage_chemical_struct_dict)
         kurt = calculKurtosisFromDict(phage_chemical_struct_dict)
 
     #conversion of the results in percentage
@@ -270,6 +273,7 @@ def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:
         phage_chemical_struct_dict['P_MOLECULES_MED'] = med
         phage_chemical_struct_dict['P_MOLECULES_STD'] = std
         phage_chemical_struct_dict['P_MOLECULES_VAR'] = var
+        phage_chemical_struct_dict['P_MOLECULES_SKEWNESS'] = skewness
         phage_chemical_struct_dict['P_MOLECULES_KURTOSIS'] = kurt
 
     return phage_chemical_struct_dict
@@ -354,6 +358,22 @@ def calculKurtosisFromDict(dictionnary:dict):
         values.append(value)
     return kurtosis(values)
 
+def calculSkewnessFromDict(dictionnary:dict):
+    """
+    get skewness value from a dictionnary
+
+    :param dictionnary: dictionnary
+
+    :type dictionnary: dict
+
+    :return: skewness of all value contained in dictionnary
+    :rtype: float
+    """
+    values = []
+    for value in dictionnary.values():
+        values.append(value)
+    return skew(values)
+
 def calculMedianFromDict(dictionnary:dict):
     """
     get median value from a dictionnary
@@ -375,7 +395,7 @@ def calculMedianFromDict(dictionnary:dict):
 #==============================================================================
 
 #list_couple = network.getCouplesInteraction(CoupleJson.getAllAPI(), interaction_type=True)
-list_couple = network.getCouplesLysis([5, 8, 9])
+list_couple = network.getCouplesLysis([9])
 list_phages = []
 for couple in list_couple:
     if not couple.bacteriophage in list_phages:
@@ -405,4 +425,4 @@ df1.to_csv(os.path.join('../../statistiques/CSV/', r"fichier_test.csv"))
 '''
 df2 = pd.DataFrame.from_dict(data=phages_molecules, orient="index")
 df2.to_csv(os.path.join('../../statistiques/CSV/', r"fichier_test.csv"))
-'''
+#'''
