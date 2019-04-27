@@ -270,16 +270,16 @@ def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:
 #==============================================================================
 #==============================================================================
 repository = '../../statistiques/CSV/'
-file_name = 'fichier_test_5.csv'
+file_name = 'phage_in_all_couples_clear_lysis.csv'
 
 CLEAR_LYSIS = 5
-CLEAR_LYSIS_M1E7 = 8 
-CLEAR_LYSIS_P1E7 = 9
+CLEAR_LYSIS_P1E7 = 8 
+CLEAR_LYSIS_M1E7 = 9
 
 #get the phages of all the couples with an interaction type
 #list_couple = network.getCouplesInteraction(CoupleJson.getAllAPI(), interaction_type=True)
 #get the phages of specific couples 
-list_couple = network.getCouplesLysis([CLEAR_LYSIS])
+list_couple = network.getCouplesLysis([CLEAR_LYSIS, CLEAR_LYSIS_P1E7, CLEAR_LYSIS_M1E7])
 list_phages = []
 for couple in list_couple:
     if not couple.bacteriophage in list_phages:
