@@ -1,3 +1,8 @@
+
+# File : stats_phages.py
+# Author : Christophe Joyet
+# Date : Avril 2019
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -6,7 +11,6 @@ import os
 import network_chart_couples_cl as network
 from collections import Counter
 from collections import OrderedDict
-from scipy.stats import kurtosis, skew
 
 from configuration.configuration_api import ConfigurationAPI
 from rest_client.AuthenticationRest import AuthenticationAPI
@@ -192,25 +196,29 @@ def getFeaturesForAPhage(phage:BacteriophageJson, active_percentage:bool=False, 
     :return: features of the given phages (mean and std of 21 amino acids of the phage)
     :rtype: dictionnary {Amino Acid Description : features}
     """
+ 
     list_prot = ProteinJson.getByOrganismID(phage.id)
     phage_amino_acid_dict = OrderedDict()
 
-    tab_21 = [[]]*21
-    #source : https://stackoverflow.com/questions/45713887/add-values-from-two-dictionaries
     #get all amino acids of the phage
     for protein in list_prot:
         protein_amino_acids = getFrequenceAllAminoAcidForAProtein(protein)
+
         #add values from two dictionnaries in one
+        # Source : 
+        # MSEIFERT [Pseudonyme], 2017. You can use collections.Counter which implements addition + that way. 
+        # Stackoverflow [en ligne]. 16 août 2017 à 2h29. 
+        # [Consulté le 3 Avril 2019]. Disponible à l'adresse : https://stackoverflow.com/questions/45713887/add-values-from-two-dictionaries
         phage_amino_acid_dict = Counter(Counter(phage_amino_acid_dict) + Counter(protein_amino_acids))
 
-    #calcul mean and std    
+    #calcul mean
     tot_protein_of_the_phage = len(ProteinJson.getByOrganismID(phage.id))
     dict_of_features = {}
     if get_features == True:
         #calcul mean of each amino acid
         for amino_acid_key in phage_amino_acid_dict.keys():
             dict_of_features['MEAN_AA_' + str(amino_acid_key)] = phage_amino_acid_dict[amino_acid_key] / tot_protein_of_the_phage
-        #calcul std of each amino acid
+    
     return dict_of_features
 
 def converstionValuesInPercentage(dictionnary:dict):
@@ -246,7 +254,6 @@ def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:
     """
     phage_amino_acid_dict = getFeaturesForAPhage(phage)
     phage_chemical_struct_dict = OrderedDict()
-    #source : https://stackoverflow.com/questions/45713887/add-values-from-two-dictionaries
     #get all amino acids of the phage
     for amino_acid, number_of_amino_acid in phage_amino_acid_dict.items():
         #get each molecule of the amino acid
@@ -262,29 +269,39 @@ def getAllChemicalStructureForAPhage(phage:BacteriophageJson, active_percentage:
 
 #==============================================================================
 #==============================================================================
+repository = '../../statistiques/CSV/'
+file_name = 'fichier_test_5.csv'
 
+CLEAR_LYSIS = 5
+CLEAR_LYSIS_M1E7 = 8 
+CLEAR_LYSIS_P1E7 = 9
+
+#get the phages of all the couples with an interaction type
 #list_couple = network.getCouplesInteraction(CoupleJson.getAllAPI(), interaction_type=True)
-list_couple = network.getCouplesLysis([5,8,9])
+#get the phages of specific couples 
+list_couple = network.getCouplesLysis([CLEAR_LYSIS])
 list_phages = []
 for couple in list_couple:
     if not couple.bacteriophage in list_phages:
         list_phages.append(couple.bacteriophage)
 
 print("nombre de phages différents : " + str(len(list_phages)))
-#Supprimer pour inverser
-#'''
+
 phages_amino_acids = OrderedDict()
 for couple in list_couple:
     if not couple.bacteriophage in phages_amino_acids.keys():
         phage_amino_acid_dict = getFeaturesForAPhage(BacteriophageJson.getByID(couple.bacteriophage), active_percentage=False, get_features=True)
         phages_amino_acids[couple.bacteriophage] = phage_amino_acid_dict
 
-#source : https://stackoverflow.com/questions/31436783/writing-dictionary-of-dictionaries-to-csv-file-in-a-particular-format
-
+# Source : 
+# ADAM SMITH [Pseudonyme], 2015. This is beyond simple if you can use pandas. 
+# Stackoverflow [en ligne]. 16 Juillet 2015 à 16h38. 
+# [Consulté le 3 Avril 2019]. Disponible à l'adresse : https://stackoverflow.com/questions/31436783/writing-dictionary-of-dictionaries-to-csv-file-in-a-particular-format
 df1 = pd.DataFrame.from_dict(data=phages_amino_acids, orient="index")
-df1.to_csv(os.path.join('../../statistiques/CSV/', r"fichier_test_4.csv"))
+df1.to_csv(os.path.join(repository, file_name))
 
-print("features enregistrées sous ../../statistiques/CSV/nom_de_fichier.csv")
-      
+ending_message = "file " + file_name + " saved in " + repository
+print(ending_message)
+
 #==============================================================================
 #==============================================================================
