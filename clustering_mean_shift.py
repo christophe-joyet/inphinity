@@ -23,6 +23,10 @@ list_std_coord_Y = []
 X = []
 phage_id = []
 
+# ==================================================================
+# take data from csv file
+# ==================================================================
+
 with open('../../statistiques/CSV/phages_in_clear_lysis_couple.csv', 'r') as f:
     reader = csv.reader(f, delimiter=',')
     for row in reader:
@@ -87,13 +91,14 @@ with open('../../statistiques/CSV/phages_in_clear_lysis_couple.csv', 'r') as f:
         phage_id.append(BacteriophageJson.getByID(row[0]).designation)
 f.close()
 
-#we need a 3D representation -> we use PCA to reduce dimension
+# we need a 3D representation -> we use PCA to reduce dimension
 pca = PCA(n_components=2)
 X = pca.fit_transform(X)
 X = np.array(X)
 
-# #############################################################################
+# ==================================================================
 # Compute clustering with MeanShift
+# ==================================================================
 
 # The following bandwidth can be automatically detected using
 bandwidth = estimate_bandwidth(X, quantile=0.6, n_samples=500)
@@ -109,8 +114,9 @@ n_clusters_ = len(labels_unique)
 
 print("number of estimated clusters : %d" % n_clusters_)
 
-# #############################################################################
+# ==================================================================
 # Plot result
+# ==================================================================
 import matplotlib.pyplot as plt
 from itertools import cycle
 
@@ -127,7 +133,11 @@ for k, col in zip(range(n_clusters_), colors):
     plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,
              markeredgecolor='k', markersize=14)
 plt.title("Graph - K-MeanShift -  %d cluster(s) estimated" % n_clusters_)
-#display name of phages
+
+# ==================================================================
+# display name of phages
+# ==================================================================
+
 for i, txt in enumerate(phage_id):
     plt.annotate(txt, (X[:, 0][i], X[:, 1][i]))
 

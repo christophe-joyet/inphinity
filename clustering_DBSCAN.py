@@ -19,6 +19,10 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
+# ==================================================================
+# take data from csv file
+# ==================================================================
+
 coordinates = []
 phage_designation = []
 
@@ -90,6 +94,10 @@ f.close()
 pca = PCA(n_components=2)
 coordinates = pca.fit_transform(coordinates)
 
+# ==================================================================
+# clustering
+# ==================================================================
+
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(coordinates)
 # cluster the data
@@ -101,7 +109,9 @@ plt.xticks([])
 plt.yticks([])
 plt.title("Graph - DBSCAN")
 
-#display phages' name
+# ==================================================================
+# display phages'name
+# ==================================================================
 for i, txt in enumerate(phage_designation):
     plt.annotate(txt, (coordinates[i,0],coordinates[i,1]))
 

@@ -22,6 +22,10 @@ AuthenticationAPI().createAutenthicationToken()
 coordinates = []
 phage_designation = []
 
+# ==================================================================
+# take data from csv file
+# ==================================================================
+
 with open('../../statistiques/CSV/phages_in_clear_lysis_couple.csv', 'r') as f:
     reader = csv.reader(f, delimiter=',')
     for row in reader:
@@ -86,8 +90,9 @@ with open('../../statistiques/CSV/phages_in_clear_lysis_couple.csv', 'r') as f:
         phage_designation.append(BacteriophageJson.getByID(row[0]).designation)
 f.close()
 
-#=========================================3D========================================================
-#=========================================3D========================================================
+# =================================================================================================
+# 3D Graph
+# =================================================================================================
 '''
 #we need a 3D representation -> we use PCA to reduce dimension
 pca = PCA(n_components=3)
@@ -116,16 +121,17 @@ ax.set_zticklabels([])
 ax.set_title("Graph - K-Mean Algorithme with K = 3")
 
 '''
-#=========================================2D========================================================
-#=========================================2D========================================================
-#we need a 3D representation -> we use PCA to reduce dimension of our matrix
+# =================================================================================================
+# 2D Graph
+# =================================================================================================
+# we need a 2D representation -> we use PCA to reduce dimension of our matrix
 pca = PCA(n_components=2)
 coordinates = pca.fit_transform(coordinates)
 
 coordinates = np.array(coordinates)
-#n_cluster => nombre de clusters que l'on veut.
-#n_init => nombre de fois que l'on effectue l'algorithme depuis le départ
-#max_iter => nombre d'itération pour trouver le meilleur centre
+#n_cluster => number of clusters we want.
+#n_init    => number of execution of the algorithm
+#max_iter  => number of iteration to find the center
 kmeans = KMeans(n_clusters=4, init='random', n_init=10, max_iter=100)
 kmeans.fit(coordinates)
 y_kmeans = kmeans.predict(coordinates)
@@ -136,7 +142,7 @@ plt.scatter(coordinates[:, 0], coordinates[:, 1], c=y_kmeans, s=50, cmap='viridi
 centers = kmeans.cluster_centers_
 plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
 
-#affiche les noms
+#display phages' name
 for i, txt in enumerate(phage_designation):
     plt.annotate(txt, (coordinates[i,0],coordinates[i,1]))
 

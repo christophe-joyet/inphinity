@@ -16,6 +16,10 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
+# ==================================================================
+# take data from csv file
+# ==================================================================
+
 coordinates = []
 phage_designation = []
 
@@ -82,7 +86,13 @@ with open('../../statistiques/CSV/phages_in_clear_lysis_couple.csv', 'r') as f:
         phage_designation.append(BacteriophageJson.getByID(row[0]).designation)
 f.close()
 
+
+# ==================================================================
+# clustering
+# ==================================================================
+
 X = np.array(coordinates)
+
 #reduce the matrix
 coordinates_embedded = TSNE(n_components=2).fit_transform(coordinates)
 y_data = coordinates_embedded[:,1]
@@ -92,7 +102,11 @@ plt.clim(0, 10)
 plt.title("Graph - T-SNE")
 plt.xticks([])
 plt.yticks([])
-#display name of phages
+
+
+# ==================================================================
+# display phages'name
+# ==================================================================
 for i, txt in enumerate(phage_designation):
     plt.annotate(txt, (coordinates_embedded[i,0],coordinates_embedded[i,1]))
 plt.show()
