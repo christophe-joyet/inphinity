@@ -1,4 +1,7 @@
-# libraries
+
+# File : network_chart_couples_cl.py
+# Author : Christophe Joyet
+# Date : February 2019
 import pandas as pd
 import numpy as np
 import networkx as nx
@@ -13,9 +16,6 @@ from objects_API.OrganismJ import OrganismJson
 from objects_API.BacteriophageJ import BacteriophageJson
 from objects_API.StrainJ import StrainJson
 from objects_API.SpecieJ import SpecieJson
-
-from Bio import Entrez #to import data from GenBank
-Entrez.email = "christophe.joyet@heig-vd.ch"
 
 conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
@@ -142,7 +142,6 @@ def getAllOfCouples():
     list_couples = CoupleJson.getAllAPI()
     return list_couples
 
-
 def getCouplesLysis(lysis_type):
     """
     get all couples of DB Inphinity according with the lysis type
@@ -168,7 +167,6 @@ def getCouplesLysis(lysis_type):
 
     return list_couples_lysis_type
 
-#get couples dictionnary according to their taxonomie
 def getCouplesTaxonomie(couples_list:list):
     """
     get couples dictionnary according to their taxonomie
@@ -221,19 +219,3 @@ def getAccessionNumber(organism_list:list):
     
     return accessions_number_list
 
-#get definition of an organism using Genbank
-'''def getOrganismDefinitionFromGenBank(organism_list:list):
-    organism_definition_list = []
-    i = 0
-
-    while(i < len(organism_list)):
-        query = str(organism_list[i])
-        handle = Entrez.esearch(db='nucleotide', term=query)
-        record = Entrez.read(handle)
-        gi = record['IdList']
-        protein_info = Entrez.efetch(db="nucleotide",id=gi,rettype="gb",retmode="xml")
-        protein_info = Entrez.read(protein_info)
-
-        organism_definition_list.append()
-
-        i += 1'''

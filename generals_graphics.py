@@ -1,3 +1,7 @@
+# File : generals_graphics.py
+# Author : Christophe Joyet
+# Date : February 2019
+
 import matplotlib.pyplot as plt
 
 from configuration.configuration_api import ConfigurationAPI
@@ -15,32 +19,57 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
-#get all couples of the DB inphinity
 def getAllOfCouples():
+        """
+        get all couples from DB Inphinity
+
+        :return: all couples from DB Inphinity
+        :rtype: list 
+        """
         list_couples = CoupleJson.getAllAPI()
         return list_couples
 
-#get all Strain of the DB inphinity
 def getAllOfStrain():
+        """
+        get all Strains from DB Inphinity
+
+        :return: all Strains from DB Inphinity
+        :rtype: list 
+        """
         list_strain = StrainJson.getAllAPI()
         return list_strain
     
-#get all Genus of the DB inphinity
 def getAllOfGenus():
+        """
+        get all Genus from DB Inphinity
+
+        :return: all genus from DB Inphinity
+        :rtype: list 
+        """
         list_genus = GenusJson.getAllAPI()
         return list_genus
 
-#get all Family of the DB inphinity
 def getAllOfFamily():
+        """
+        get all families from DB Inphinity
+
+        :return: all families from DB Inphinity
+        :rtype: list 
+        """
         list_family = FamilyJson.getAllAPI()
         return list_family
 
-#get all SourceData of the DB inphinity
 def getAllOfSourceData():
+        """
+        get all source data from DB Inphinity
+
+        :return: all families from DB Inphinity
+        :rtype: list 
+        """
         list_source_data = SourceDataJson.getAllAPI()
         return list_source_data
 
-#=============================PART 1=========================================
+#===============================FIRST CHART=====================================
 
 #get all couples in a list
 list_of_couples = getAllOfCouples()
@@ -82,7 +111,7 @@ axs.set_ylabel('number of organisms')
 axs.set_xlabel('organism')
 plt.bar(name, number_of_bact_and_phage, width = 0.8, color = 'orange', edgecolor = 'b')
 
-#=============================PART 2=========================================
+#===============================SECOND CHART=====================================
 
 #dictionnary {strain_name : number of bacteries in this strain}
 strain_dictionnary = {}
@@ -202,7 +231,7 @@ axs[1].pie(number_of_genus_tab, labels=genus_name, autopct='%1.0f%%', startangle
 axs[2].set_title("Family repartition in couples")
 axs[2].pie(number_of_family_tab, labels=family_name, autopct='%1.0f%%', startangle=140, textprops={'size': 20})
 
-#=============================PART 3=========================================
+#===============================THIRD CHART=====================================
 source_data_list = getAllOfSourceData()
 source_data_dictionnary = {}
 
@@ -254,6 +283,7 @@ public_couples = []
 NCBI = 1
 PhagesDB = 2
 
+#ID of taxonomie
 Strain = 1
 Specie = 2
 Genus = 3
@@ -293,7 +323,7 @@ axs[2].legend(wedges, taxonomie_name,
           bbox_to_anchor=(1, 0, 0.5, 1),
           prop={'size': 20})
 
-#=============================PART 4=========================================
+#===============================FOURTH CHART=====================================
 
 #ID of each variable for the validity (found in inphinity DB)
 laboratory_tested = 1

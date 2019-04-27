@@ -36,7 +36,11 @@ def getAllChemicalStructureOfAminoAcids(amino_acid:str):
     :return: chemical strucutre of the given amino acid
     :rtype: dictionnary {atomium : occurence}
     """
-    #source : https://www.britannica.com/science/amino-acid
+    # Source : 
+    # K.REDDY, Michael, 1998. "Amino acid CHEMICAL COMPOUND". 
+    # ENCYCLOPAEDIA BRITANNICA [en ligne]. 20 Juillet 1998. 
+    # [Consulté le 27 février 2019]. Disponible à l'adresse : https://www.britannica.com/science/amino-acid
+    
     #dict contains 21 proteins with their molecules
     molecule_amino_acid = { 'A':{
                                 'H' : 7,
