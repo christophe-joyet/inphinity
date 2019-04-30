@@ -113,7 +113,7 @@ ax.scatter(centers[:, 0], centers[:, 1], c='green', s=200, alpha=0.5)
 
 #affiche les noms
 for i, txt in enumerate(phage_designation):
-    ax.text(coordinates[i,0],coordinates[i,1],coordinates[i,2],  phage_designation[i], size=6) 
+    ax.text(coordinates[i,0],coordinates[i,1],coordinates[i,2],  phage_designation[i], size=12) 
 
 ax.set_xticklabels([])
 ax.set_yticklabels([])
@@ -132,7 +132,7 @@ coordinates = np.array(coordinates)
 #n_cluster => number of clusters we want.
 #n_init    => number of execution of the algorithm
 #max_iter  => number of iteration to find the center
-kmeans = KMeans(n_clusters=4, init='random', n_init=10, max_iter=100)
+kmeans = KMeans(n_clusters=3, init='random', n_init=10, max_iter=100)
 kmeans.fit(coordinates)
 y_kmeans = kmeans.predict(coordinates)
 
@@ -144,14 +144,14 @@ plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
 
 #display phages' name
 for i, txt in enumerate(phage_designation):
-    plt.annotate(txt, (coordinates[i,0],coordinates[i,1]))
+    plt.annotate(txt, (coordinates[i,0],coordinates[i,1]), size=12)
 
 ax.set_xticklabels([])
 ax.set_yticklabels([])
-ax.set_title("Graph - K-Mean Algorithme with K = 4")
+ax.set_title("Graph - K-Mean Algorithme with K = 3")
+
 
 plt.show()
-
 # Source : 
 # VANDERPLAS, Jake, N.D. In Depth: k-Means Clustering. 
 # Python Data Science HandBook [en ligne]. 

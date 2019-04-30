@@ -101,7 +101,7 @@ X = np.array(X)
 # ==================================================================
 
 # The following bandwidth can be automatically detected using
-bandwidth = estimate_bandwidth(X, quantile=0.6, n_samples=500)
+bandwidth = estimate_bandwidth(X, quantile=0.5, n_samples=500)
 
 ms = MeanShift(bandwidth=bandwidth, bin_seeding=True)
 
@@ -132,6 +132,8 @@ for k, col in zip(range(n_clusters_), colors):
     plt.plot(X[my_members, 0], X[my_members, 1], col + '.')
     plt.plot(cluster_center[0], cluster_center[1], 'o', markerfacecolor=col,
              markeredgecolor='k', markersize=14)
+plt.xticks([])
+plt.yticks([])
 plt.title("Graph - K-MeanShift -  %d cluster(s) estimated" % n_clusters_)
 
 # ==================================================================
@@ -139,7 +141,7 @@ plt.title("Graph - K-MeanShift -  %d cluster(s) estimated" % n_clusters_)
 # ==================================================================
 
 for i, txt in enumerate(phage_id):
-    plt.annotate(txt, (X[:, 0][i], X[:, 1][i]))
+    plt.annotate(txt, (X[:, 0][i], X[:, 1][i]), size = 12)
 
 plt.show()
 

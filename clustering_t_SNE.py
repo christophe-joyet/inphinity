@@ -23,7 +23,7 @@ AuthenticationAPI().createAutenthicationToken()
 coordinates = []
 phage_designation = []
 
-with open('../../statistiques/CSV/phages_in_clear_lysis_couple.csv', 'r') as f:
+with open('../../statistiques/CSV/phage_in_all_couples_clear_lysis.csv', 'r') as f:
     reader = csv.reader(f, delimiter=',')
     for row in reader:
         if 'MEAN_AA_M' in row:
