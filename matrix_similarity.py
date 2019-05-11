@@ -80,12 +80,12 @@ def getSimilarityScoreTwoProtein(proteinA:ProteinJson, proteinB:ProteinJson):
     # get the score
     return score / len(al1)
 
-    '''
+    
     print("Length PA : " + str(len(ProteinA_sequence_AA)))
     print("Length PB : " + str(len(ProteinB_sequence_AA)))
     print("Length al1 : " + str(len(al1)))
     print("Length al2 : " + str(len(al2)))
-    '''
+    
 #==============================================================================
 #==============================================================================
 
@@ -106,19 +106,22 @@ def getSimilarityScoreTwoPhages(phage_A:BacteriophageJson, phage_B:Bacteriophage
     protein_list_phage_1 = ProteinJson.getByOrganismID(phage_A)
     protein_list_phage_2 = ProteinJson.getByOrganismID(phage_B)
 
-    '''
+    
     print("length list 1 " + str(len(protein_list_phage_1)))
-    print("length list 2 " + str(len(protein_list_phage_2)))'''
+    print("length list 2 " + str(len(protein_list_phage_2)))
 
     # contient les meilleurs match entre les paires de protéines
     list_score_best_match_protein = []
-
+    i = 0
     for protein_phage_1 in protein_list_phage_1:
         # contient les scores des paires de protéines
         list_score_protein = []
         for protein_phage_2 in protein_list_phage_2:
                 list_score_protein.append(getSimilarityScoreTwoProtein(protein_phage_1, protein_phage_2))
         list_score_best_match_protein.append(np.max(list_score_protein))
+        i += 1
+        print(str(i) + "/" + str(len(protein_list_phage_1)) + " protein compared\n")
+
 
     '''
     print("Score max d'un match = " + str(np.amax(list_score_best_match_protein)))
@@ -149,7 +152,7 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
 
     matrice_similarity = []
     similarity = []
-
+    i = 0
     # devrait nous donner une matrice symétrique !
     matrix_size = len(list_phages_to_compare)
     for i in range(matrix_size):
@@ -157,6 +160,9 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
         for j in range(matrix_size):
             similarity.append(getSimilarityScoreTwoPhages(list_phages_to_compare[i], list_phages_to_compare[j]))
         matrice_similarity.append(similarity)
+        i += 1
+        print(str(i) + "/" + str(len(list_phages_to_compare)) + " phages compared\n")
+
 
     #get phages name
     phages_name = []
@@ -168,6 +174,3 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
     ending_message = "file " + file_name + " saved in " + path
     
     print(ending_message)
-
-
-

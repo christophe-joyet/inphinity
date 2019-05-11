@@ -21,6 +21,9 @@ AuthenticationAPI().createAutenthicationToken()
 #==============================================================================
 #==============================================================================
 
+file_name = "matrix.csv"
+path = "../../similarite/"
+
 list_couple_clear_lysis = network.getCouplesLysis([5])
 list_phages_to_compare = []
 
@@ -29,7 +32,7 @@ for couple in list_couple_clear_lysis:
     if not couple.bacteriophage in list_phages_to_compare:
         list_phages_to_compare.append(couple.bacteriophage)
 
-ms.getSimilarityMatrix(list_phages_to_compare, "matrix.csv", "../../similarite/")
+ms.getSimilarityMatrix(list_phages_to_compare, file_name, path)
 
 #==============================================================================
 #==============================================================================
