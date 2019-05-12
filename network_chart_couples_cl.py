@@ -60,8 +60,8 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     :type graph_name: string
 
     """
-    fig, ax = plt.subplots(figsize=(200, 100))
-
+    # plot declaration
+    fig, ax = plt.subplots(figsize=(20, 10))
     ax.set_title('Network between phages and bacteries', fontsize=16)
     
     #get all different phages
@@ -72,9 +72,13 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     #get different couple in function of their taxonomy
     nodes_couples_strain_level  = []
     nodes_couples_species_level = []
+
+    # not use yet
+    '''
     nodes_couples_genus_level   = []
     nodes_couples_family_level  = []
     nodes_couples_unknown_level = []
+    '''
     #get the name of each bacterium (strain + species)
     for couple in list_couples_lysis_type:
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
@@ -84,11 +88,12 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
         if not bacterium_designation in nodes_bacterium:
             nodes_bacterium.append(bacterium_designation)
         
-        #get phages' designation
+        #get bact' designation
         couple_bacteriophage = BacteriophageJson.getByID(couple.bacteriophage).designation
         if not couple_bacteriophage in nodes_phages:
             nodes_phages.append(couple_bacteriophage)
 
+        #get phages' designation
         phages_designation = BacteriophageJson.getByID(couple.bacteriophage).designation
 
         if couple.level == 1:
@@ -97,6 +102,8 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
         elif couple.level == 2:
             if not phages_designation in nodes_couples_species_level:
                 nodes_couples_species_level.append(phages_designation)
+        # not use yet 
+        '''
         elif couple.level == 3:
             if not phages_designation in nodes_couples_genus_level:
                 nodes_couples_genus_level.append(phages_designation)
@@ -106,6 +113,7 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
         else:
             if not phages_designation in nodes_couples_unknown_level:
                 nodes_couples_unknown_level.append(phages_designation)
+        '''
 
     print("Nombre de phages différents : " + str(len(nodes_phages)))
     print("Nombre de bactéries différentes : " + str(len(nodes_bacterium)))
@@ -144,7 +152,7 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
                            alpha=node_alpha, node_color='r')
         
     nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
-                           alpha=edge_alpha,edge_color='b', length=10)
+                           alpha=edge_alpha,edge_color='b')
    
     #display ID of bacterium and phages
     nx.draw_networkx_labels(G, graph_pos,font_size=node_text_size,

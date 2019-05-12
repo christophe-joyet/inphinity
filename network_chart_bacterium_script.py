@@ -25,15 +25,17 @@ AuthenticationAPI().createAutenthicationToken()
 #=============================================================================================
 
 bacterium_dict = {}
-bacterium_dict2 = {}
-bacterium_dict['bacterium'] = 126
-bacterium_dict2['bacterium'] = 359
+#bacterium_dict2 = {}
 
-liste_couple   = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
-liste_couple_2 = (CoupleJson.getCouplesByFilterParameter(bacterium_dict2))
+# bacterie to research
+bacterium_dict['bacterium'] = 70
+#bacterium_dict2['bacterium'] = 359
 
-for couple in liste_couple_2:
-    liste_couple.append(couple)
+liste_couple = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
+#liste_couple_2 = (CoupleJson.getCouplesByFilterParameter(bacterium_dict2))
+
+#for couple in liste_couple_2:
+#   liste_couple.append(couple)
 
 #defining two correlation tables between phages and bacteriums
 phages = []
