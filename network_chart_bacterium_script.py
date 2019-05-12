@@ -24,16 +24,20 @@ AuthenticationAPI().createAutenthicationToken()
 #=============================================================================================
 #=============================================================================================
 
+bacterium_dict = {}
+bacterium_dict2 = {}
+bacterium_dict['bacterium'] = 126
+bacterium_dict2['bacterium'] = 359
+
+liste_couple   = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
+liste_couple_2 = (CoupleJson.getCouplesByFilterParameter(bacterium_dict2))
+
+for couple in liste_couple_2:
+    liste_couple.append(couple)
+
 #defining two correlation tables between phages and bacteriums
 phages = []
 bacterium = []
-
-list_couple = []
-bacterium_dict = {}
-bacterium_dict['bacterium'] = 70
-
-liste_couple = CoupleJson.getCouplesByFilterParameter(bacterium_dict)
-print(liste_couple)
 
 for couple in liste_couple:
     phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation)
@@ -44,4 +48,4 @@ for couple in liste_couple:
     bacterium.append(specie_designation + '-' +  strain_designation)
 
 # network graph
-network.draw_graph(phages, bacterium, liste_couple, graph_name='bacterium_try_1')
+network.draw_graph(phages, bacterium, liste_couple, graph_name='bacterium_try_1', is_png=False)

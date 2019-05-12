@@ -43,7 +43,7 @@ ALL_SEMI_CLEAR_LYSIS = [SEMI_CLEAR_LYSIS, SEMI_CLEAR_LYSIS_1E7PLUS, SEMI_CLEAR_L
 #=============================================================================================
 
 #choose what type of lysis we want
-lysis_type = ALL_CLEAR_LYSIS
+lysis_type = CLEAR_LYSIS_1E7MINUS
 
 list_couples_lysis_type = []
 list_couples_lysis_type = network.getCouplesLysis(lysis_type)
@@ -63,4 +63,4 @@ for couple in list_couples_lysis_type:
     bacterium.append(specie_designation + '-' +  strain_designation)
 
 # network graph
-network.draw_graph(phages, bacterium, list_couples_lysis_type, graph_name='all_clear_lysis')
+network.draw_graph(phages, bacterium, list_couples_lysis_type, graph_name='all_clear_lysis', is_png=False)

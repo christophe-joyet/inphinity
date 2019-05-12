@@ -22,7 +22,7 @@ def DisplayDendrogramFromMatrix(matrix_path:str):
 
     # Data set
     df = pd.read_csv(matrix_path)
-    
+
     # delete the row with the labels
     df = df.set_index('phages name')
     del df.index.name

@@ -23,7 +23,7 @@ AuthenticationAPI().createAutenthicationToken()
 
 def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
                is_png=True,
-               node_size=1600, node_alpha=0.5,
+               node_size=300, node_alpha=0.5,
                node_text_size=8,
                edge_alpha=0.5, edge_tickness=0.5,
                edge_text_pos=1.0,
@@ -68,7 +68,13 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     nodes_phages = []
     #get all different bacterium
     nodes_bacterium = []
-    
+
+    #get different couple in function of their taxonomy
+    nodes_couples_strain_level  = []
+    nodes_couples_species_level = []
+    nodes_couples_genus_level   = []
+    nodes_couples_family_level  = []
+    nodes_couples_unknown_level = []
     #get the name of each bacterium (strain + species)
     for couple in list_couples_lysis_type:
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
@@ -82,6 +88,24 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
         couple_bacteriophage = BacteriophageJson.getByID(couple.bacteriophage).designation
         if not couple_bacteriophage in nodes_phages:
             nodes_phages.append(couple_bacteriophage)
+
+        phages_designation = BacteriophageJson.getByID(couple.bacteriophage).designation
+
+        if couple.level == 1:
+            if not phages_designation in nodes_couples_strain_level:
+                nodes_couples_strain_level.append(phages_designation)
+        elif couple.level == 2:
+            if not phages_designation in nodes_couples_species_level:
+                nodes_couples_species_level.append(phages_designation)
+        elif couple.level == 3:
+            if not phages_designation in nodes_couples_genus_level:
+                nodes_couples_genus_level.append(phages_designation)
+        elif couple.level == 4:
+            if not phages_designation in nodes_couples_family_level:
+                nodes_couples_family_level.append(phages_designation)
+        else:
+            if not phages_designation in nodes_couples_unknown_level:
+                nodes_couples_unknown_level.append(phages_designation)
 
     print("Nombre de phages différents : " + str(len(nodes_phages)))
     print("Nombre de bactéries différentes : " + str(len(nodes_bacterium)))
@@ -107,15 +131,20 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     graph_pos=nx.spring_layout(G)
 
     # draw graph
-    #defining nodes features
-    nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_phages,node_size=node_size, 
-                           alpha=node_alpha, node_color='r')
-    
-    nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_bacterium,node_size=node_size, 
+    #defining nodes features for couple level strain
+    nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_couples_strain_level,node_size=node_size, 
                            alpha=node_alpha, node_color='g')
+    
+    #defining nodes features for couple level sepcies
+    nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_couples_species_level,node_size=node_size, 
+                            alpha=node_alpha, node_color='y')
+    
+    #defining nodes features for bacterium
+    nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_bacterium,node_size=node_size, 
+                           alpha=node_alpha, node_color='r')
         
     nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
-                           alpha=edge_alpha,edge_color='b')
+                           alpha=edge_alpha,edge_color='b', length=10)
    
     #display ID of bacterium and phages
     nx.draw_networkx_labels(G, graph_pos,font_size=node_text_size,
@@ -124,7 +153,7 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     #show graph
     ax.set_xticklabels([])
     ax.set_yticklabels([])
-    ax.set_xlabel('Green = Bacterium\n Red = Phages')
+    ax.set_xlabel('Red = Bacterium\nGreen = Phages - Couple level Strain\nYellow = Phages - Couple level Species')
     
     #save graph in png or display it
     if is_png:
