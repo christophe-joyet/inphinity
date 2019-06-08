@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # File : matrix_similarity_script.py
 # Author : Christophe Joyet
 # Date : Mai 2019
@@ -18,13 +19,18 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
+import time
+
 #==============================================================================
 #==============================================================================
 
-file_name = "matrix.csv"
+file_name = "similarity_Streptomyces_Venezuelae-ATCC_10712_gap_1_0.5.csv"
 path = "../../similarite/"
+start = time.time()
+bacterium_dict = {}
+bacterium_dict['bacterium'] = 126
 
-list_couple_clear_lysis = network.getCouplesLysis([5])
+list_couple_clear_lysis = CoupleJson.getCouplesByFilterParameter(bacterium_dict)
 list_phages_to_compare = []
 
 for couple in list_couple_clear_lysis:
@@ -33,6 +39,7 @@ for couple in list_couple_clear_lysis:
         list_phages_to_compare.append(couple.bacteriophage)
 
 ms.getSimilarityMatrix(list_phages_to_compare, file_name, path)
-
+end = time.time()
+print('%.2f' % (end - start))
 #==============================================================================
 #==============================================================================

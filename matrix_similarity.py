@@ -26,15 +26,8 @@ from Bio import pairwise2
 from Bio.pairwise2 import format_alignment
 from Bio.SubsMat.MatrixInfo import blosum62
 
-from skbio.alignment import local_pairwise_align_ssw 
 from skbio.alignment import StripedSmithWaterman 
 from skbio.alignment import AlignmentStructure
-
-from Bio.SubsMat import MatrixInfo
-from skbio.sequence import Protein
-
-
-
 
 conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
@@ -74,31 +67,6 @@ striped_mx = {'A' : {'A':4, 'R':-1, 'N':-2, 'D':-2, 'C':0, 'Q':-1, 'E':-1, 'G':0
 #==============================================================================
 #==============================================================================
 
-def getSimilarityScoreTwoProteinLocalAlignStripedSmithWaterman(proteinA:ProteinJson, proteinB:ProteinJson):
-    """
-  
-    """
-    # =======================================================================
-    # Align the two sequences
-    # =======================================================================
-
-    # IUPAC provides some informations about the sequence AA
-    ProteinA_sequence_AA = proteinA.sequence_AA
-    ProteinB_sequence_AA = proteinB.sequence_AA
-
-    query = StripedSmithWaterman(ProteinA_sequence_AA)
-    aligner = query(ProteinB_sequence_AA)
-
-    
-    # get the score and the length of sequence
-    print(aligner)
-    
-   
-    #return (score / length)
-
-#==============================================================================
-#==============================================================================
-
 def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:ProteinJson):
     """
     get similarity score between two proteins with local alignment
@@ -113,12 +81,12 @@ def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:Protei
     :rtype: float16   
     """
     # =======================================================================
-    # Align the two sequences
+    # Align the two sequences with PairWise2 Library
     # =======================================================================
 
     # IUPAC provides some informations about the sequence AA
-    ProteinA_sequence_AA = Seq(proteinA.sequence_AA, IUPAC.protein)
-    ProteinB_sequence_AA = Seq(proteinB.sequence_AA, IUPAC.protein)
+    # ProteinA_sequence_AA = Seq(proteinA.sequence_AA, IUPAC.protein)
+    # ProteinB_sequence_AA = Seq(proteinB.sequence_AA, IUPAC.protein)
 
     # Match parameters :
     #   x     No parameters. Identical characters have score of 1, otherwise 0.
@@ -139,29 +107,34 @@ def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:Protei
     # 1 point is deducted for each open gaps.
     # 0.5 point is deducted for each extended gaps.
     # aligner = pairwise2.align.localds(ProteinA_sequence_AA, ProteinB_sequence_AA, blosum62, -1, -0.5)
-    # aligner = pairwise2.align.localxx(ProteinA_sequence_AA, 1, 0)
+    # aligner = pairwise2.align.localxx(ProteinA_sequence_AA, ProteinB_sequence_AA)
     # aligner = pairwise2.align.localms(ProteinA_sequence_AA, ProteinB_sequence_AA, 1, 0, -1, -0.5)
+
+    # get the score and the length of sequence
+    # for a in aligner:
+    #   al1, al2, score, begin, end = a
+
+    # get the score with ponderation WITH BLOSUM62
+    # perfect_score = pairwise2.align.localds(ProteinA_sequence_AA, ProteinA_sequence_AA, blosum62, -10, -1, score_only=True)
+    # return ((score / perfect_score) * ((end - begin) / len(al1)))
+
+    # get the score with ponderation WITHOUT BLOSUM62
+    # return ((score / len(al1)) * ((end - begin) / len(al1)))
+
+    # =======================================================================
+    # Align the two sequences with Skbio
+    # =======================================================================
+
+    # using optimized Smit-Waterman
     query = StripedSmithWaterman(proteinA.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=1, gap_extend_penalty=0.5, score_only=True)
     queryscoremax = StripedSmithWaterman(proteinA.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=1, gap_extend_penalty=0.5, score_only=True)
-    aligner_score1 = query(proteinB.sequence_AA)
-    aligner_score2 = queryscoremax(proteinA.sequence_AA)
+    aligner_score = query(proteinB.sequence_AA)
+    aligner_score_max = queryscoremax(proteinA.sequence_AA)
 
-    score1 = int(str(aligner_score1).split(" ")[1])
-    score2 = int(str(aligner_score2).split(" ")[1])
-    # get the score and the length of sequence
-    '''for a in aligner:
-        al1, al2, score, begin, end = a'''
-
-    # length al1 == al2
-    # get the score with ponderation WITH BLOSUM62
-    '''
-    perfect_score = pairwise2.align.localds(ProteinA_sequence_AA, ProteinA_sequence_AA, blosum62, -10, -1, score_only=True)
-    return ((score / perfect_score) * ((end - begin) / len(al1)))
-    '''
-    # get the score with ponderation WITHOUT BLOSUM62
-    #return ((score / len(al1)) * ((end - begin) / len(al1)))
-
-    return score1 / score2
+    # get scores from the return of query functions
+    score = int(str(aligner_score).split(" ")[1])
+    score_max = int(str(aligner_score_max).split(" ")[1])
+    return score / score_max
 
 #==============================================================================
 #==============================================================================
@@ -205,47 +178,46 @@ def getSimilarityScoreTwoProteinGlobalAlign(proteinA:ProteinJson, proteinB:Prote
     # 0 point is deducted for each non-identical character. 
     # 1 point is deducted for each open gaps.
     # 0.5 point is deducted for each extended gaps.
+    # aligner = pairwise2.align.globalds(ProteinA_sequence_AA, ProteinB_sequence_AA, blosum62, -1, -0.5)
+    # aligner = pairwise2.align.globalxx(ProteinA_sequence_AA, ProteinB_sequence_AA)
     aligner = pairwise2.align.globalms(ProteinA_sequence_AA, ProteinB_sequence_AA, 1, 0, -1, -0.5)
     
     # get the score and the length of sequence
     for a in aligner:
         al1, al2, score, begin, end = a
 
-    # length al1 == al2
     # get the score
-    print("MOTHERFUCKER")
     return score / len(al1)
 
     
 #==============================================================================
 #==============================================================================
 
-def getSimilarityScoreTwoPhages(phage_A:BacteriophageJson, phage_B:BacteriophageJson, is_local = True):
+def getSimilarityScoreTwoPhages(phage_A:int, phage_B:int, is_local = True):
     """
     get similarity score between two phages
 
-    :param phage_A: phage A
-    :param phage_B: phage to compare to phage A
+    :param phage_A: id_phage A
+    :param phage_B: id_phage to compare to phage A
 
-    :type phage_A: BacteriophageJson
-    :type phage_B: BacteriophageJson
+    :type phage_A: int
+    :type phage_B: int
 
     :return: similarity score between two phage
     :rtype: float16   
     """
-
     protein_list_phage_1 = ProteinJson.getByOrganismID(phage_A)
     protein_list_phage_2 = ProteinJson.getByOrganismID(phage_B)
 
     
-    print("length list 1 " + str(len(protein_list_phage_1)))
-    print("length list 2 " + str(len(protein_list_phage_2)))
+    # print("length list 1 " + str(len(protein_list_phage_1)))
+    # print("length list 2 " + str(len(protein_list_phage_2)))
 
-    # contient les meilleurs match entre les paires de protéines
+    # contains best match between protein
     list_score_best_match_protein = []
     i = 0
     for protein_phage_1 in protein_list_phage_1:
-        # contient les scores des paires de protéines
+        # contains score between protein
         list_score_protein = []
         for protein_phage_2 in protein_list_phage_2:
             if is_local:
@@ -253,16 +225,31 @@ def getSimilarityScoreTwoPhages(phage_A:BacteriophageJson, phage_B:Bacteriophage
             else:
                 list_score_protein.append(getSimilarityScoreTwoProteinGlobalAlign(protein_phage_1, protein_phage_2))
         list_score_best_match_protein.append(np.max(list_score_protein))
-        i += 1
-        print(str(i) + "/" + str(len(protein_list_phage_1)) + " protein compared\n")
 
+        # ====================== POUR DIOGOG  ======================  ======================  ====================== 
+        '''
+        if all(elem == list_score_best_match_protein[0] for elem in list_score_best_match_protein):
+            i+=1
+            pass
+        else:
+            return 0  '''
+        # ====================== POUR DIOGOG  ======================  ======================  ====================== 
+        #  
+        i += 1
+        #print(str(i) + "/" + str(len(protein_list_phage_1)) + " protein compared\n")
+
+
+    # ====================== POUR DIOGOG  ======================  ======================  ======================  
+    '''   
+    if phage_A != phage_B:
+        print(str(phage_A) + " " + str(phage_B))
+        '''
+    # ====================== POUR DIOGOG  ======================  ======================  ====================== 
     '''
     print("Score max d'un match = " + str(np.amax(list_score_best_match_protein)))
     print("Length of list best match = " + str(len(list_score_best_match_protein)))'''
-
-    # similarité basé sur la moyenne des meilleurs matchs des protéines 
+    # similarity based on the mean of all best match
     return np.mean(list_score_best_match_protein)
-
 
 #==============================================================================
 #==============================================================================
@@ -288,9 +275,14 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
     i = 0
 
     matrix_size = len(list_phages_to_compare)
+    print(list_phages_to_compare)
     for i in range(matrix_size):
         similarity = []
         for j in range(matrix_size):
+             #print("phage compared " + str(list_phages_to_compare[i]) + " " + str(list_phages_to_compare[j]))
+            if list_phages_to_compare[i] == list_phages_to_compare[j]:
+                similarity.append(1.0)
+                continue
             similarity.append(getSimilarityScoreTwoPhages(list_phages_to_compare[i], list_phages_to_compare[j]))
         matrice_similarity.append(similarity)
         i += 1
@@ -308,66 +300,26 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
     
     print(ending_message)
 
-def petitmodele():
-    # IUPAC provides some informations about the sequence AA
-    ProteinA_sequence_AA = Seq("MVARRKGERVVRKNEVENVQQRACANRRERQRTKELNDAFTLLRKLIPSMPSDKMSKIHTLRIATDYISFLDEMQKNGCKLYGHSIFDEKRGYNLQSAFNMWRGNNGYTPIAGPSQLPPLQSAHIPPPAPSSIPPHCLMPQPWYQTCPPPKQEFHELCPISTPNPNSNPNQLTPIHWQ", IUPAC.protein)
-    ProteinB_sequence_AA = Seq("MVARRKGERVVRKNEVENVQQRACANRRERQRTKELNDAFTLLRKLIPSMPSDKMSKIHTLRIATDYISFLDEMQKNGCKLYGHSIFDEKRGYNLQSAFNMWRGNNGYTPIAGPSQLPPLQSAHIPPPAPSSIPPHCLMPQPWYQTCPPPKQEFHELCPISTPNPNSNPNQLTPIHWQ", IUPAC.protein)
-    list_prot = ProteinJson.getByOrganismID(2050)
-   
-    print("MS")
-    timeTot = 0
-
-    for i in list_prot:
-        ProteinB_sequence_AA = Seq(i.sequence_AA, IUPAC.protein)
-        timeStart = time.time()
-        aligner2 = pairwise2.align.localds(ProteinA_sequence_AA, ProteinB_sequence_AA, blosum62, -1, -0.5)
-        timeEnd = time.time()
-        timeTot += timeEnd - timeStart
-
-    print("avg = " + str(timeTot / len(list_prot)))
-
-    timeTot = 0
-
-    for i in list_prot:
-        ProteinB_sequence_AA = Seq(i.sequence_AA, IUPAC.protein)
-        timeStart = time.time()
-        aligner2 = pairwise2.align.globalds(ProteinA_sequence_AA, ProteinB_sequence_AA, blosum62, -1, -0.5)
-        timeEnd = time.time()
-        timeTot += timeEnd - timeStart
-    
-    # get the score and the length of sequence
-    for a in aligner2:
-        al1, al2, score, begin, end = a
-
-    '''print("Len 1 : " + str(len(ProteinA_sequence_AA)))
-    print("Len 2 : " + str(len(ProteinB_sequence_AA)))
-    print("al1 = " + str(len(al1)))
-    print("al2 = " + str(len(al2)))
-    print("Score = " + str(score))
-    print("begin = " + str(begin))
-    print("end = " + str(end))'''
-    print("avg = " + str(timeTot / len(list_prot)))
-
-    query = StripedSmithWaterman("MVARRKGERVVRKNEVENVQQRACANRRERQRTKELNDAFTLLRKLIPSMPSDKMSKIHTLRIATDYISFLDEMQKNGCKLYGHSIFDEKRGYNLQSAFNMWRGNNGYTPIAGPSQLPPLQSAHIPPPAPSSIPPHCLMPQPWYQTCPPPKQEFHELCPISTPNPNSNPNQLTPIHWQ", protein=True, substitution_matrix=striped_mx)
-    alignment = query(i.sequence_AA)
-
-    timeTot = 0
-
-    for i in list_prot:
-        timeStart = time.time()
-        alignment = query(i.sequence_AA)
-        timeEnd = time.time()
-        timeTot += timeEnd - timeStart
-
-    for i in alignment:
-        print(str(i))
-    print("avg = " + str(timeTot / len(list_prot)))
-
-    # length al1 == al2
-    # get the score'''
-
-#petitmodele()
 
 
+# ====================== POUR DIOGOG  ======================  ======================  ====================== 
+'''
+bacterium_dict = {}
+bacterium_dict['bacterium'] = 126
+list_couple_clear_lysis = CoupleJson.getCouplesByFilterParameter(bacterium_dict)
+list_phage = []#BacteriophageJson.getAllAPI()
 
-        
+for couple in list_couple_clear_lysis:
+    # vérifie qu'il n'y a pas déjà le même phage dans la liste
+    if not couple.bacteriophage in list_phage:
+        list_phage.append(couple.bacteriophage)
+print(len(list_phage))
+
+for i in range(len(list_phage)):
+    j = i
+    for j in range(len(list_phage)):
+        getSimilarityScoreTwoPhages(list_phage[i], list_phage[j])
+        j += 1
+    i += 1
+    print(i)'''
+# ====================== POUR DIOGOG  ======================  ======================  ======================        
