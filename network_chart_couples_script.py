@@ -4,6 +4,7 @@ import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import network_chart_couples_cl as network
+import time
 
 
 from configuration.configuration_api import ConfigurationAPI
@@ -41,26 +42,25 @@ ALL_SEMI_CLEAR_LYSIS = [SEMI_CLEAR_LYSIS, SEMI_CLEAR_LYSIS_1E7PLUS, SEMI_CLEAR_L
 
 #=============================================================================================
 #=============================================================================================
-
-#choose what type of lysis we want
-lysis_type = CLEAR_LYSIS_1E7MINUS
+# choose what type of lysis we want
+lysis_type = ALL_CLEAR_LYSIS
 
 list_couples_lysis_type = []
 list_couples_lysis_type = network.getCouplesLysis(lysis_type)
 
 print("Nombre de couples : " + str(len(list_couples_lysis_type)))
 
-#defining two correlation tables between phages and bacteriums
+# defining two correlation tables between phages and bacteriums
 phages = []
 bacterium = []
 
 for couple in list_couples_lysis_type:
-    phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation)
+    phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage))
     #get the name of bacterium (strain designation + species designation)
     strain_id = BacteriumJson.getByID(couple.bacterium).strain
     strain_designation = StrainJson.getByID(strain_id).designation
     specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
-    bacterium.append(specie_designation + '-' +  strain_designation)
+    bacterium.append(specie_designation + '\n' +  strain_designation + '\n' + str(couple.bacterium))
 
 # network graph
-network.draw_graph(phages, bacterium, list_couples_lysis_type, graph_name='all_clear_lysis', is_png=False)
+network.draw_graph(phages, bacterium, list_couples_lysis_type, graph_name='all_clear_lysis', is_png=True)

@@ -21,25 +21,55 @@ AuthenticationAPI().createAutenthicationToken()
 
 import time
 
-#==============================================================================
-#==============================================================================
+#=============================================================================================
+#Constantes declarations
+#=============================================================================================
 
-file_name = "similarity_Streptomyces_Venezuelae-ATCC_10712_gap_1_0.5.csv"
+#Lysis Type
+CLEAR_LYSIS = 5
+SEMI_CLEAR_LYSIS = 6
+OPAQUE_LYSIS = 7
+#dilution > 1e7
+CLEAR_LYSIS_1E7PLUS = 8
+SEMI_CLEAR_LYSIS_1E7PLUS = 10
+#dilution < 1e7
+CLEAR_LYSIS_1E7MINUS = 9
+SEMI_CLEAR_LYSIS_1E7MINUS = 11
+
+ALL_CLEAR_LYSIS = [CLEAR_LYSIS, CLEAR_LYSIS_1E7PLUS, CLEAR_LYSIS_1E7MINUS]
+ALL_SEMI_CLEAR_LYSIS = [SEMI_CLEAR_LYSIS, SEMI_CLEAR_LYSIS_1E7PLUS, SEMI_CLEAR_LYSIS_1E7MINUS]
+
+#=============================================================================================
+#=============================================================================================
+
+# choose what type of lysis we want
+lysis_type = ALL_CLEAR_LYSIS
+
+list_couples_lysis_type = []
+list_couples_lysis_type = network.getCouplesLysis(lysis_type)
+
+#=============================================================================================
+#=============================================================================================
+file_name = "similarity_Pseudomonas_aeruginosa_Muco16.csv"
 path = "../../similarite/"
-start = time.time()
-bacterium_dict = {}
-bacterium_dict['bacterium'] = 126
 
-list_couple_clear_lysis = CoupleJson.getCouplesByFilterParameter(bacterium_dict)
+# bacterie to research by ID
+bacterium_dict = {}
+bacterium_dict['bacterium'] = 5190
+liste_couple = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
+
+# select only couples of a certain certain type
+for couple in liste_couple:
+    if not couple in list_couples_lysis_type:
+        liste_couple.remove(couple)
+
 list_phages_to_compare = []
 
-for couple in list_couple_clear_lysis:
-    # vérifie qu'il n'y a pas déjà le même phage dans la liste
+for couple in liste_couple:
+    # check if there is no duplicate phage in the list
     if not couple.bacteriophage in list_phages_to_compare:
         list_phages_to_compare.append(couple.bacteriophage)
 
 ms.getSimilarityMatrix(list_phages_to_compare, file_name, path)
-end = time.time()
-print('%.2f' % (end - start))
-#==============================================================================
-#==============================================================================
+#=============================================================================================
+#=============================================================================================

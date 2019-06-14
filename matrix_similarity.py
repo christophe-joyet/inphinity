@@ -126,8 +126,8 @@ def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:Protei
     # =======================================================================
 
     # using optimized Smit-Waterman
-    query = StripedSmithWaterman(proteinA.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=1, gap_extend_penalty=0.5, score_only=True)
-    queryscoremax = StripedSmithWaterman(proteinA.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=1, gap_extend_penalty=0.5, score_only=True)
+    query = StripedSmithWaterman(proteinA.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=10, gap_extend_penalty=1, score_only=True)
+    queryscoremax = StripedSmithWaterman(proteinA.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=10, gap_extend_penalty=1, score_only=True)
     aligner_score = query(proteinB.sequence_AA)
     aligner_score_max = queryscoremax(proteinA.sequence_AA)
 

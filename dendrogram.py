@@ -32,10 +32,12 @@ def DisplayDendrogramFromMatrix(matrix_path:str):
     Z = hierarchy.linkage(df, 'ward')
     
     # Plot with Custom leaves
-    # hierarchy.dendrogram(Z, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
+    hierarchy.dendrogram(Z, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
 
     # Standardize or Normalize every column in the figure
-    sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward", cmap="Blues")
+    # sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward", cmap="Blues")
     
     # Display
     plt.show()
+
+DisplayDendrogramFromMatrix("../../similarite/similarity_Pseudomonas_aeruginosa_Muco16.csv")

@@ -63,6 +63,9 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     # plot declaration
     fig, ax = plt.subplots(figsize=(20, 10))
     ax.set_title('Network between phages and bacteries', fontsize=16)
+    margin=0.1
+    fig.subplots_adjust(margin, margin, 1.-margin, 1.-margin)
+    ax.axis('equal')
     
     #get all different phages
     nodes_phages = []
@@ -84,17 +87,15 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
         strain_designation = StrainJson.getByID(strain_id).designation
         specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
-        bacterium_designation = specie_designation + '-' +  strain_designation
+        bacterium_designation = specie_designation + '\n' +  strain_designation + '\n' + str(couple.bacterium)
+        # get bact' designation
         if not bacterium_designation in nodes_bacterium:
             nodes_bacterium.append(bacterium_designation)
         
-        #get bact' designation
-        couple_bacteriophage = BacteriophageJson.getByID(couple.bacteriophage).designation
-        if not couple_bacteriophage in nodes_phages:
-            nodes_phages.append(couple_bacteriophage)
-
         #get phages' designation
-        phages_designation = BacteriophageJson.getByID(couple.bacteriophage).designation
+        phages_designation = BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage)
+        if not phages_designation in nodes_phages:
+            nodes_phages.append(phages_designation)
 
         if couple.level == 1:
             if not phages_designation in nodes_couples_strain_level:
