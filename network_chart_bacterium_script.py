@@ -22,32 +22,57 @@ conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
 #=============================================================================================
+#Constantes declarations
 #=============================================================================================
 
+#Lysis Type
+CLEAR_LYSIS = 5
+SEMI_CLEAR_LYSIS = 6
+OPAQUE_LYSIS = 7
+#dilution > 1e7
+CLEAR_LYSIS_1E7PLUS = 8
+SEMI_CLEAR_LYSIS_1E7PLUS = 10
+#dilution < 1e7
+CLEAR_LYSIS_1E7MINUS = 9
+SEMI_CLEAR_LYSIS_1E7MINUS = 11
+
+ALL_CLEAR_LYSIS = [CLEAR_LYSIS, CLEAR_LYSIS_1E7PLUS, CLEAR_LYSIS_1E7MINUS]
+ALL_SEMI_CLEAR_LYSIS = [SEMI_CLEAR_LYSIS, SEMI_CLEAR_LYSIS_1E7PLUS, SEMI_CLEAR_LYSIS_1E7MINUS]
+
+#=============================================================================================
+#=============================================================================================
+
+# choose what type of lysis we want
+lysis_type = ALL_CLEAR_LYSIS
+
+list_couples_lysis_type = []
+list_couples_lysis_type = network.getCouplesLysis(lysis_type)
+
+#=============================================================================================
+#=============================================================================================
+
+# bacterie to research by ID
 bacterium_dict = {}
-#bacterium_dict2 = {}
-
-# bacterie to research
-bacterium_dict['bacterium'] = 70
-#bacterium_dict2['bacterium'] = 359
-
+bacterium_dict['bacterium'] = 5190
 liste_couple = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
-#liste_couple_2 = (CoupleJson.getCouplesByFilterParameter(bacterium_dict2))
 
-#for couple in liste_couple_2:
-#   liste_couple.append(couple)
+# select only couples of a certain certain type
+for couple in liste_couple:
+    if not couple in list_couples_lysis_type:
+        liste_couple.remove(couple)
 
-#defining two correlation tables between phages and bacteriums
+# defining two correlation tables between phages and bacteriums
 phages = []
 bacterium = []
 
 for couple in liste_couple:
-    phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation)
-    #get the name of bacterium (strain designation + species designation)
+    # get designation and phage id
+    phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage))
+    # get the name of bacterium (strain designation + species designation) and his id
     strain_id = BacteriumJson.getByID(couple.bacterium).strain
     strain_designation = StrainJson.getByID(strain_id).designation
     specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
-    bacterium.append(specie_designation + '-' +  strain_designation)
+    bacterium.append(specie_designation + '\n' +  strain_designation + '\n' + str(couple.bacterium))
 
 # network graph
 network.draw_graph(phages, bacterium, liste_couple, graph_name='bacterium_try_1', is_png=False)
