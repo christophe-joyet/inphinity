@@ -295,7 +295,10 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
         phages_name.append(BacteriophageJson.getByID(phage).designation)
 
     df1 = pd.DataFrame(data=matrice_similarity, columns=phages_name, index=phages_name)
-    df1.to_csv(os.path.join(path, file_name))
+    df1 = df1.rename_axis('Phages designation', axis='columns')
+    df1.to_csv(os.path.join(path, file_name), index_label= 'Phages designation')
+
+
     ending_message = "file " + file_name + " saved in " + path
     
     print(ending_message)
