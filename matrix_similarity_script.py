@@ -39,8 +39,8 @@ SEMI_CLEAR_LYSIS_1E7MINUS = 11
 ALL_CLEAR_LYSIS = [CLEAR_LYSIS, CLEAR_LYSIS_1E7PLUS, CLEAR_LYSIS_1E7MINUS]
 ALL_SEMI_CLEAR_LYSIS = [SEMI_CLEAR_LYSIS, SEMI_CLEAR_LYSIS_1E7PLUS, SEMI_CLEAR_LYSIS_1E7MINUS]
 
-#=============================================================================================
-#=============================================================================================
+# =============================================================================================
+# =============================================================================================
 
 # choose what type of lysis we want
 lysis_type = ALL_CLEAR_LYSIS
@@ -48,13 +48,18 @@ lysis_type = ALL_CLEAR_LYSIS
 list_couples_lysis_type = []
 list_couples_lysis_type = network.getCouplesLysis(lysis_type)
 
-#=============================================================================================
-#=============================================================================================
-file_name = "similarity_Pseudomonas_aeruginosa_Muco16.csv"
+# =============================================================================================
+# =============================================================================================
+
+file_name = "essai.csv"
 path = "../../similarite/"
 
-# bacterie to research by ID
+# =============================================================================================
+# =============================================================================================
+
+# get couple from specific bacterie
 bacterium_dict = {}
+# research bact by ID
 bacterium_dict['bacterium'] = 5190
 liste_couple = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
 
@@ -63,13 +68,18 @@ for couple in liste_couple:
     if not couple in list_couples_lysis_type:
         liste_couple.remove(couple)
 
+# =============================================================================================
+# =============================================================================================
+
 list_phages_to_compare = []
 
+# to compare phages of an other list use 
+# for couple in list_couples_lysis_type:
 for couple in liste_couple:
     # check if there is no duplicate phage in the list
     if not couple.bacteriophage in list_phages_to_compare:
         list_phages_to_compare.append(couple.bacteriophage)
-
+        
 ms.getSimilarityMatrix(list_phages_to_compare, file_name, path)
 #=============================================================================================
 #=============================================================================================
