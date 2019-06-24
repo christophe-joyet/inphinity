@@ -24,7 +24,7 @@ def DisplayDendrogramFromMatrix(matrix_path:str):
     df = pd.read_csv(matrix_path)
 
     # delete the row with the labels
-    df = df.set_index('phages name')
+    df = df.set_index('Phages designation')
     del df.index.name
     df
 
@@ -35,8 +35,9 @@ def DisplayDendrogramFromMatrix(matrix_path:str):
     hierarchy.dendrogram(Z, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
 
     # Standardize or Normalize every column in the figure
-    # sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward", cmap="Blues")
-    
+    # sns.heatmap(df, cmap="RdYlGn", square=True, xticklabels=True, yticklabels=True)
+    # sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward")
+   
     # Display
     plt.show()
 

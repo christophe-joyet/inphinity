@@ -35,9 +35,9 @@ AuthenticationAPI().createAutenthicationToken()
 Entrez.email = "christophe.joyet@heig-vd.ch"
 
 
-#==============================================================================
-#2D dict for StripedSmithWaterman
-#==============================================================================
+# ==============================================================================
+# 2D dict for StripedSmithWaterman
+# ==============================================================================
 
 striped_mx = {'A' : {'A':4, 'R':-1, 'N':-2, 'D':-2, 'C':0, 'Q':-1, 'E':-1, 'G':0, 'H':-2, 'I':-1, 'L':-1, 'K':-1, 'M':-1, 'F':-2, 'P':-1, 'S':1, 'T':0, 'W':-3, 'Y':-2, 'V':0, 'B':-2, 'Z':-1, 'X':0, '*':-4},
               'R' : {'A':-1, 'R':5, 'N':0, 'D':-2, 'C':-3, 'Q':1, 'E':0, 'G':-2, 'H':0, 'I':-3, 'L':-2, 'K':2, 'M':-1, 'F':-3, 'P':-2, 'S':-1, 'T':-1, 'W':-3, 'Y':-2, 'V':-3, 'B':-1, 'Z':0, 'X':-1, '*':-4},
@@ -64,8 +64,8 @@ striped_mx = {'A' : {'A':4, 'R':-1, 'N':-2, 'D':-2, 'C':0, 'Q':-1, 'E':-1, 'G':0
               'X' : {'A':0, 'R':-1, 'N':-1, 'D':-1, 'C':-2, 'Q':-1, 'E':-1, 'G':-1, 'H':-1, 'I':-1, 'L':-1, 'K':-1, 'M':-1, 'F':-1, 'P':-2, 'S':0, 'T':0, 'W':-2, 'Y':-1, 'V':-1, 'B':-1, 'Z':-1, 'X':-1, '*':-4},
               '*' : {'A':-4, 'R':-4, 'N':-4, 'D':-4, 'C':-4, 'Q':-4, 'E':-4, 'G':-4, 'H':-4, 'I':-4, 'L':-4, 'K':-4, 'M':-4, 'F':-4, 'P':-4, 'S':-4, 'T':-4, 'W':-4, 'Y':-4, 'V':-4, 'B':-4, 'Z':-4, 'X':-4, '*':1}}
 
-#==============================================================================
-#==============================================================================
+# ==============================================================================
+# ==============================================================================
 
 def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:ProteinJson):
     """
@@ -136,8 +136,8 @@ def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:Protei
     score_max = int(str(aligner_score_max).split(" ")[1])
     return score / score_max
 
-#==============================================================================
-#==============================================================================
+# ==============================================================================
+# ==============================================================================
 
 def getSimilarityScoreTwoProteinGlobalAlign(proteinA:ProteinJson, proteinB:ProteinJson):
     """
@@ -190,8 +190,8 @@ def getSimilarityScoreTwoProteinGlobalAlign(proteinA:ProteinJson, proteinB:Prote
     return score / len(al1)
 
     
-#==============================================================================
-#==============================================================================
+# ==============================================================================
+# ==============================================================================
 
 def getSimilarityScoreTwoPhages(phage_A:int, phage_B:int, is_local = True):
     """
@@ -224,35 +224,15 @@ def getSimilarityScoreTwoPhages(phage_A:int, phage_B:int, is_local = True):
                 list_score_protein.append(getSimilarityScoreTwoProteinLocalAlign(protein_phage_1, protein_phage_2))
             else:
                 list_score_protein.append(getSimilarityScoreTwoProteinGlobalAlign(protein_phage_1, protein_phage_2))
+        # vector contained the best scores between phage A and phage B
         list_score_best_match_protein.append(np.max(list_score_protein))
-
-        # ====================== POUR DIOGOG  ======================  ======================  ====================== 
-        '''
-        if all(elem == list_score_best_match_protein[0] for elem in list_score_best_match_protein):
-            i+=1
-            pass
-        else:
-            return 0  '''
-        # ====================== POUR DIOGOG  ======================  ======================  ====================== 
-        #  
         i += 1
-        #print(str(i) + "/" + str(len(protein_list_phage_1)) + " protein compared\n")
 
-
-    # ====================== POUR DIOGOG  ======================  ======================  ======================  
-    '''   
-    if phage_A != phage_B:
-        print(str(phage_A) + " " + str(phage_B))
-        '''
-    # ====================== POUR DIOGOG  ======================  ======================  ====================== 
-    '''
-    print("Score max d'un match = " + str(np.amax(list_score_best_match_protein)))
-    print("Length of list best match = " + str(len(list_score_best_match_protein)))'''
     # similarity based on the mean of all best match
     return np.mean(list_score_best_match_protein)
 
-#==============================================================================
-#==============================================================================
+# ==============================================================================
+# ==============================================================================
 
 def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
     """
@@ -275,15 +255,21 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
     i = 0
 
     matrix_size = len(list_phages_to_compare)
+    rows = 5
+    print(rows)
+
     print(list_phages_to_compare)
     for i in range(matrix_size):
         similarity = []
         for j in range(matrix_size):
-             #print("phage compared " + str(list_phages_to_compare[i]) + " " + str(list_phages_to_compare[j]))
+            # print("phage compared " + str(list_phages_to_compare[i]) + " " + str(list_phages_to_compare[j]))
+            # if this is the same phage, rating max -> 1.0
             if list_phages_to_compare[i] == list_phages_to_compare[j]:
                 similarity.append(1.0)
                 continue
+            # add similarity score in the list similarity
             similarity.append(getSimilarityScoreTwoPhages(list_phages_to_compare[i], list_phages_to_compare[j]))
+        # add the score in the matrix
         matrice_similarity.append(similarity)
         i += 1
         print(str(i) + "/" + str(len(list_phages_to_compare)) + " phages compared\n")
@@ -303,26 +289,47 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
     
     print(ending_message)
 
+# ==============================================================================
+# ==============================================================================
+
+def getSimilarityLocalSequence(phage_A:int, phage_B:int, path:str, similarity_min=0.8, similarity_max=1.0):
+    """
+    create a txt file with proteins alignments between Phage_A and Phage_B.
+    Alignement will be saved if the similarity score of proteins is between similarity_min and similarity_max.  
+
+    :param phage_A: id_phage A
+    :param phage_B: id_phage to compare to phage A
+    :param similarity_min : similarity min
+    :param similarity_max : similarity max
+
+    :type phage_A: int
+    :type phage_B: int
+    :param similarity_min [0-1]: float value between 0.0 and 1.0
+    :param similarity_max [0-1]: float value between 0.0 and 1.0
+    """
+    #récupérer les protéines des phages
+    protein_list_phage_1 = ProteinJson.getByOrganismID(phage_A)
+    protein_list_phage_2 = ProteinJson.getByOrganismID(phage_B)
+
+    file_name = BacteriophageJson.getByID(phage_A).designation + " compare to " + BacteriophageJson.getByID(phage_B).designation
+    
+    for protein_phage_1 in protein_list_phage_1:
+        for protein_phage_2 in protein_list_phage_2:
+                #si les on a une correspondance de plus d'un certain pourcentage 
+                similarity_score = getSimilarityScoreTwoProteinLocalAlign(protein_phage_1, protein_phage_2)
+                if similarity_score >= similarity_min and similarity_score <= similarity_max:
+                    # enregistrement des informations sur la proteine dans un fichier txt
+                    query = StripedSmithWaterman(protein_phage_1.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=10, gap_extend_penalty=1, score_only=False)
+                    alignement = query(protein_phage_2.sequence_AA)                    
+                    # ouverture du fichier en mode append (ajout à la fin du fichier)
+                    fichier = open(path + file_name, "a")
+                    fichier.write("\n\n" + str(protein_phage_1.description) + " compare to " + str(protein_phage_2.description) + "\n" + str(alignement.aligned_query_sequence) + "\n" + str(alignement.aligned_target_sequence) + "\n" + "%.3f"%(similarity_score*100) + "%\n")
+                    fichier.close()
+
+    ending_message = "file " + file_name + " saved in " + path
+    
+    print(ending_message)
 
 
-# ====================== POUR DIOGOG  ======================  ======================  ====================== 
-'''
-bacterium_dict = {}
-bacterium_dict['bacterium'] = 126
-list_couple_clear_lysis = CoupleJson.getCouplesByFilterParameter(bacterium_dict)
-list_phage = []#BacteriophageJson.getAllAPI()
 
-for couple in list_couple_clear_lysis:
-    # vérifie qu'il n'y a pas déjà le même phage dans la liste
-    if not couple.bacteriophage in list_phage:
-        list_phage.append(couple.bacteriophage)
-print(len(list_phage))
-
-for i in range(len(list_phage)):
-    j = i
-    for j in range(len(list_phage)):
-        getSimilarityScoreTwoPhages(list_phage[i], list_phage[j])
-        j += 1
-    i += 1
-    print(i)'''
-# ====================== POUR DIOGOG  ======================  ======================  ======================        
+# ============================================================================== Test Area ============================================================================== 

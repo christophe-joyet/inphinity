@@ -56,16 +56,17 @@ bacterium_dict = {}
 bacterium_dict['bacterium'] = 5190
 liste_couple = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
 
-# select only couples of a certain certain type
+# select couple in function of the lysis
+liste_couple_final = []
 for couple in liste_couple:
-    if not couple in list_couples_lysis_type:
-        liste_couple.remove(couple)
+        if couple.lysis in lysis_type:
+                liste_couple_final.append(couple)
 
 # defining two correlation tables between phages and bacteriums
 phages = []
 bacterium = []
 
-for couple in liste_couple:
+for couple in liste_couple_final:
     # get designation and phage id
     phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage))
     # get the name of bacterium (strain designation + species designation) and his id
@@ -75,4 +76,4 @@ for couple in liste_couple:
     bacterium.append(specie_designation + '\n' +  strain_designation + '\n' + str(couple.bacterium))
 
 # network graph
-network.draw_graph(phages, bacterium, liste_couple, graph_name='bacterium_try_1', is_png=False)
+network.draw_graph(phages, bacterium, liste_couple_final, graph_name='bacterium_try_1', is_png=False)

@@ -51,7 +51,7 @@ list_couples_lysis_type = network.getCouplesLysis(lysis_type)
 # =============================================================================================
 # =============================================================================================
 
-file_name = "essai.csv"
+file_name = "similarity_Pseudomonas_aeruginosa_Muco16.csv"
 path = "../../similarite/"
 
 # =============================================================================================
@@ -63,10 +63,11 @@ bacterium_dict = {}
 bacterium_dict['bacterium'] = 5190
 liste_couple = (CoupleJson.getCouplesByFilterParameter(bacterium_dict))
 
-# select only couples of a certain certain type
+# select couple in function of the lysis
+liste_couple_final = []
 for couple in liste_couple:
-    if not couple in list_couples_lysis_type:
-        liste_couple.remove(couple)
+        if couple.lysis in lysis_type:
+                liste_couple_final.append(couple)
 
 # =============================================================================================
 # =============================================================================================
@@ -75,7 +76,7 @@ list_phages_to_compare = []
 
 # to compare phages of an other list use 
 # for couple in list_couples_lysis_type:
-for couple in liste_couple:
+for couple in liste_couple_final:
     # check if there is no duplicate phage in the list
     if not couple.bacteriophage in list_phages_to_compare:
         list_phages_to_compare.append(couple.bacteriophage)
