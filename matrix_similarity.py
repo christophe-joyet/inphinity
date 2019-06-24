@@ -307,6 +307,9 @@ def getSimilarityLocalSequence(phage_A:int, phage_B:int, path:str, similarity_mi
     :param similarity_min [0-1]: float value between 0.0 and 1.0
     :param similarity_max [0-1]: float value between 0.0 and 1.0
     """
+    # for the ending message
+    isSomethingCompared = 0
+
     #récupérer les protéines des phages
     protein_list_phage_1 = ProteinJson.getByOrganismID(phage_A)
     protein_list_phage_2 = ProteinJson.getByOrganismID(phage_B)
@@ -318,6 +321,7 @@ def getSimilarityLocalSequence(phage_A:int, phage_B:int, path:str, similarity_mi
                 #si les on a une correspondance de plus d'un certain pourcentage 
                 similarity_score = getSimilarityScoreTwoProteinLocalAlign(protein_phage_1, protein_phage_2)
                 if similarity_score >= similarity_min and similarity_score <= similarity_max:
+                    isSomethingCompared = 1
                     # enregistrement des informations sur la proteine dans un fichier txt
                     query = StripedSmithWaterman(protein_phage_1.sequence_AA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=10, gap_extend_penalty=1, score_only=False)
                     alignement = query(protein_phage_2.sequence_AA)                    
@@ -325,11 +329,13 @@ def getSimilarityLocalSequence(phage_A:int, phage_B:int, path:str, similarity_mi
                     fichier = open(path + file_name, "a")
                     fichier.write("\n\n" + str(protein_phage_1.description) + " compare to " + str(protein_phage_2.description) + "\n" + str(alignement.aligned_query_sequence) + "\n" + str(alignement.aligned_target_sequence) + "\n" + "%.3f"%(similarity_score*100) + "%\n")
                     fichier.close()
+                    
 
-    ending_message = "file " + file_name + " saved in " + path
-    
-    print(ending_message)
-
-
+    if isSomethingCompared == 1:
+        ending_message = "file " + file_name + " saved in " + path
+        print(ending_message)
+    else:
+        print("no correspondance found")
 
 # ============================================================================== Test Area ============================================================================== 
+getSimilarityLocalSequence(4457, 4911, similarity_min=0.9, similarity_max=0.99, path="../../similarite/")
