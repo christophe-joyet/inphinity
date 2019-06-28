@@ -11,7 +11,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 
-def DisplayDendrogramFromMatrix(matrix_path:str):
+def DisplayDendrogramFromMatrix(matrix_path:str, graph:str):
     """
     Display Dendrogram From csv file
 
@@ -31,14 +31,14 @@ def DisplayDendrogramFromMatrix(matrix_path:str):
     # Calculate the distance between each sample
     Z = hierarchy.linkage(df, 'ward')
     
-    # Plot with Custom leaves
-    hierarchy.dendrogram(Z, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
+    if graph == "hierarchique":
+        # Plot with Custom leaves
+        hierarchy.dendrogram(Z, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
+    elif graph == "heatmap":
+        # Standardize or Normalize every column in the figure
+        sns.heatmap(df, cmap="RdYlGn", square=True, xticklabels=True, yticklabels=True)
+    elif graph == "clustermap":
+        sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward")
 
-    # Standardize or Normalize every column in the figure
-    # sns.heatmap(df, cmap="RdYlGn", square=True, xticklabels=True, yticklabels=True)
-    # sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward")
-   
     # Display
     plt.show()
-
-DisplayDendrogramFromMatrix("../../similarite/similarity_Pseudomonas_aeruginosa_Muco16.csv")

@@ -14,7 +14,11 @@ from objects_API.CoupleJ import CoupleJson
 from objects_API.BacteriumJ import BacteriumJson
 from objects_API.OrganismJ import OrganismJson
 from objects_API.BacteriophageJ import BacteriophageJson
+from objects_API.StrainJ import StrainJson
+from objects_API.SpecieJ import SpecieJson
 from objects_API.ProteinJ import ProteinJson
+from objects_API.WholeDNAJ import WholeDNAJson
+from objects_API.ContigJ import ContigJson
 import network_chart_couples_cl as network
 import time
 
@@ -234,11 +238,11 @@ def getSimilarityScoreTwoPhages(phage_A:int, phage_B:int, is_local = True):
 # ==============================================================================
 # ==============================================================================
 
-def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
+def getSimilarityMatrix(list_organism_to_compare:list, file_name:str, path:str, is_phage=True):
     """
     get similarity matrix between a list of phages
 
-    :param list_phages_to_compare: list of phages
+    :param list_organism_to_compare: list of phages
     :param file_name: name of file where data will be stored
     :param path: where the matrix will be stored
 
@@ -248,42 +252,54 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
 
     """
 
-    print("Number of phages to analysed : " + (str(len(list_phages_to_compare))))
+    print("Number of organism to analysed : " + (str(len(list_organism_to_compare))))
 
     matrice_similarity = []
     similarity = []
     i = 0
 
-    matrix_size = len(list_phages_to_compare)
+    matrix_size = len(list_organism_to_compare)
     rows = 5
     print(rows)
-
-    print(list_phages_to_compare)
+    
+    print(list_organism_to_compare)
     for i in range(matrix_size):
         similarity = []
         for j in range(matrix_size):
-            # print("phage compared " + str(list_phages_to_compare[i]) + " " + str(list_phages_to_compare[j]))
+            # print("phage compared " + str(list_organism_to_compare[i]) + " " + str(list_organism_to_compare[j]))
             # if this is the same phage, rating max -> 1.0
-            if list_phages_to_compare[i] == list_phages_to_compare[j]:
+            if list_organism_to_compare[i] == list_organism_to_compare[j]:
                 similarity.append(1.0)
                 continue
             # add similarity score in the list similarity
-            similarity.append(getSimilarityScoreTwoPhages(list_phages_to_compare[i], list_phages_to_compare[j]))
+            similarity.append(getSimilarityScoreTwoPhages(list_organism_to_compare[i], list_organism_to_compare[j]))
         # add the score in the matrix
         matrice_similarity.append(similarity)
         i += 1
-        print(str(i) + "/" + str(len(list_phages_to_compare)) + " phages compared\n")
+        print(str(i) + "/" + str(len(list_organism_to_compare)) + " organism compared\n")
+     
+
+    #get organism names
+    organism_name = []
+    if is_phage == True:
+        for organism in list_organism_to_compare:
+            organism_name.append(BacteriophageJson.getByID(organism).designation)
+    else:
+        for organism in list_organism_to_compare:
+            strain = StrainJson.getByID(BacteriumJson.getByID(organism).strain)
+            organism_name.append(SpecieJson.getByID(strain.specie).designation + " " + strain.designation)
 
 
-    #get phages name
-    phages_name = []
-    for phage in list_phages_to_compare:
-        phages_name.append(BacteriophageJson.getByID(phage).designation)
+    # get bacterium's names
 
-    df1 = pd.DataFrame(data=matrice_similarity, columns=phages_name, index=phages_name)
-    df1 = df1.rename_axis('Phages designation', axis='columns')
-    df1.to_csv(os.path.join(path, file_name), index_label= 'Phages designation')
+    df1 = pd.DataFrame(data=matrice_similarity, columns=organism_name, index=organism_name)
 
+    if is_phage == True:
+        df1 = df1.rename_axis('Phages designation', axis='columns')
+        df1.to_csv(os.path.join(path, file_name), index_label= 'Phages designation')
+    else:
+        df1 = df1.rename_axis('Bacterium designation', axis='columns')
+        df1.to_csv(os.path.join(path, file_name), index_label= 'Bacterium designation')
 
     ending_message = "file " + file_name + " saved in " + path
     
@@ -292,7 +308,7 @@ def getSimilarityMatrix(list_phages_to_compare:list, file_name:str, path:str):
 # ==============================================================================
 # ==============================================================================
 
-def getSimilarityLocalSequence(phage_A:int, phage_B:int, path:str, similarity_min=0.8, similarity_max=1.0):
+def getProteiqueAlignmentLocalSequence(phage_A:int, phage_B:int, path:str, similarity_min=0.8, similarity_max=1.0):
     """
     create a txt file with proteins alignments between Phage_A and Phage_B.
     Alignement will be saved if the similarity score of proteins is between similarity_min and similarity_max.  
@@ -337,5 +353,54 @@ def getSimilarityLocalSequence(phage_A:int, phage_B:int, path:str, similarity_mi
     else:
         print("no correspondance found")
 
+# ==============================================================================
+# ==============================================================================
+
+def getNucleotidicAlignmentLocalSequence(phage_A:int, phage_B:int, path:str, similarity_min=0.8, similarity_max=1.0):
+    """
+    create a txt file with proteins alignments between Phage_A and Phage_B.
+    Alignement will be saved if the similarity score of proteins is between similarity_min and similarity_max.  
+
+    :param phage_A: id_phage A
+    :param phage_B: id_phage to compare to phage A
+    :param similarity_min : similarity min
+    :param similarity_max : similarity max
+
+    :type phage_A: int
+    :type phage_B: int
+    :param similarity_min [0-1]: float value between 0.0 and 1.0
+    :param similarity_max [0-1]: float value between 0.0 and 1.0
+    """
+    # for the ending message
+    isSomethingCompared = 0
+
+    #récupérer 
+    contigs_phage_1 = ContigJson.getByOrganismID(phage_A)
+    contigs_phage_2 = ContigJson.getByOrganismID(phage_B)
+
+    print(contigs_phage_1[1])
+    file_name = BacteriophageJson.getByID(phage_A).designation + " compare to " + BacteriophageJson.getByID(phage_B).designation
+    
+    # enregistrement des informations sur la proteine dans un fichier txt
+    query = StripedSmithWaterman(contigs_phage_1.sequence_DNA, protein=False, gap_open_penalty=10, gap_extend_penalty=1, score_only=False)
+    alignement = query(contigs_phage_2.sequence_DNA)                    
+    # ouverture du fichier en mode append (ajout à la fin du fichier)
+    if alignement.score >= similarity_min and alignement.score <= similarity_max:
+        isSomethingCompared = 1
+        fichier = open(path + file_name, "a")
+        fichier.write("\n\n" + str(BacteriophageJson.getByID(phage_A).designation) + " compare to " + str(BacteriophageJson.getByID(phage_B).designation) + "\n" + str(alignement.aligned_query_sequence) + "\n" + str(alignement.aligned_target_sequence) + "\n" + "%.3f"%(alignment.score*100) + "%\n")
+        fichier.close()
+                    
+
+    if isSomethingCompared == 1:
+        ending_message = "file " + file_name + " saved in " + path
+        print(ending_message)
+    else:
+        print("no correspondance found")
+
 # ============================================================================== Test Area ============================================================================== 
-getSimilarityLocalSequence(4457, 4911, similarity_min=0.9, similarity_max=0.99, path="../../similarite/")
+# getProteiqueAlignmentLocalSequence(5287, 5285, similarity_min=0.9, similarity_max=0.99, path="../../similarite/")
+# getNucleotidicAlignmentLocalSequence(5287, 5285, similarity_min=0.9, similarity_max=0.99, path="../../similarite/")
+
+
+
