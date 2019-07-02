@@ -7,7 +7,7 @@ import matrix_similarity_script as mss
 import dendrogram
 
 def openpath(e:Entry):
-    path = askopenfilename(title="Ouvrir une image",filetypes=[('png files','.png'),('all files','.*')])
+    path = askopenfilename(title="Ouvrir une image",filetypes=[('all files','.*')])
     e.set(path)
 
 # fenetre principale
@@ -66,10 +66,10 @@ bouton_network_chart_couple_script=Button(fenetre, text="graphic COUPLES: bacter
 bouton_matrix=Button(fenetre, text="create similitary matrix", command= lambda: mss.matrixSimilarityScript(file_name=file_name.get(), path=path.get(), organism_id=organism_id.get(), is_phage=is_phage_value.get()))
 
 # bouton dendogram
-bouton_dendogram=Button(fenetre, text="display graph", command= lambda: dendrogram.DisplayDendrogramFromMatrix(file_name.get(), liste_graphique_value.get()))
+bouton_dendogram=Button(fenetre, text="display graph", command= lambda: dendrogram.DisplayDendrogramFromMatrix(path_value.get(), liste_graphique_value.get()))
 
 # bouton open path 
-bouton_open_path=Button(fenetre, text="open path file", command= lambda: openpath(path_value))
+bouton_open_path=Button(fenetre, text="Choose csv file", command= lambda: openpath(path_value))
 
 phage_1_id_txt.pack()
 phage_1_id_txt.place(x=10, y=25)
@@ -105,9 +105,9 @@ bouton_matrix.place(x=10, y=200)
 bouton_dendogram.pack()
 bouton_dendogram.place(x=10,y=225)
 bouton_open_path.pack()
-bouton_open_path.place(x=320, y=120)
+bouton_open_path.place(x=150, y=225)
 liste_graphique.pack()
-liste_graphique.place(x=320, y=215)
+liste_graphique.place(x=320, y=225)
 liste_lysis_couple.pack()
 liste_lysis_couple.place(x=320, y=170)
 is_phage.pack()

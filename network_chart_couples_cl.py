@@ -17,6 +17,8 @@ from objects_API.BacteriophageJ import BacteriophageJson
 from objects_API.StrainJ import StrainJson
 from objects_API.SpecieJ import SpecieJson
 
+from collections import Counter
+
 conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
@@ -67,14 +69,17 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     fig.subplots_adjust(margin, margin, 1.-margin, 1.-margin)
     ax.axis('equal')
     
-    #get all different phages
+    # get all different phages
     nodes_phages = []
-    #get all different bacterium
+    # get all different bacterium
     nodes_bacterium = []
-
-    #get different couple in function of their taxonomy
+    # get different couple in function of their taxonomy
     nodes_couples_strain_level  = []
     nodes_couples_species_level = []
+
+    # get all strains and all species of the current research
+    all_strains = []
+    all_species = []
 
     # not use yet
     '''
@@ -82,18 +87,19 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     nodes_couples_family_level  = []
     nodes_couples_unknown_level = []
     '''
-    #get the name of each bacterium (strain + species)
+    # get the name of each bacterium (strain + species)
     for couple in list_couples_lysis_type:
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
         strain_designation = StrainJson.getByID(strain_id).designation
         specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
         bacterium_designation = specie_designation + '\n' +  strain_designation + '\n' + str(couple.bacterium)
+       
         # get bact' designation
         if not bacterium_designation in nodes_bacterium:
             nodes_bacterium.append(bacterium_designation)
-        
+            
         #get phages' designation
-        phages_designation = BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage)
+        phages_designation = BacteriophageJson.getByID(couple.bacteriophage).designation
         if not phages_designation in nodes_phages:
             nodes_phages.append(phages_designation)
 
@@ -115,10 +121,26 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
             if not phages_designation in nodes_couples_unknown_level:
                 nodes_couples_unknown_level.append(phages_designation)
         '''
-
+        all_species.append(specie_designation)
+   
+   
+    designation_of_species, number_of_species = np.unique(all_species, return_counts=True)
+    '''
+    print("Nombre de souches différentes : " + str(len(number_of_strain)) + "\n")
+    print("Nombre d'espèces différentes : " + str(len(number_of_species)) + "\n" + str(designation_of_species))
     print("Nombre de phages différents : " + str(len(nodes_phages)))
     print("Nombre de bactéries différentes : " + str(len(nodes_bacterium)))
+    '''
 
+    list_of_list = [[] for i in range(len(number_of_species))]
+
+    i = 0
+    while(i < len(number_of_species)):
+        for bact in nodes_bacterium:
+            if bact.split("\n")[0] == designation_of_species[i]:
+                list_of_list[i].append(bact)
+        i += 1
+    
     # all the nodes in our graph
     nodes = set(nodes_phages + nodes_bacterium)
 
@@ -140,17 +162,22 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     graph_pos=nx.spring_layout(G)
 
     # draw graph
-    #defining nodes features for couple level strain
+    # defining nodes features for couple level strain
     nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_couples_strain_level,node_size=node_size, 
                            alpha=node_alpha, node_color='g')
     
-    #defining nodes features for couple level sepcies
+    # defining nodes features for couple level sepcies
     nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_couples_species_level,node_size=node_size, 
-                            alpha=node_alpha, node_color='y')
+                            alpha=node_alpha, node_color='black')
     
-    #defining nodes features for bacterium
-    nx.draw_networkx_nodes(G,graph_pos,nodelist=nodes_bacterium,node_size=node_size, 
-                           alpha=node_alpha, node_color='r')
+    # different color for different strain
+    color = ['red', 'purple', 'blue', 'orange', 'grey']
+    i = 0
+    for el in list_of_list:
+        #defining nodes features for bacterium
+        nx.draw_networkx_nodes(G,graph_pos,nodelist=el,node_size=node_size, 
+                            alpha=node_alpha, node_color=color[i])
+        i = (i + 1) % 5
         
     nx.draw_networkx_edges(G,graph_pos,width=edge_tickness,
                            alpha=edge_alpha,edge_color='b')
@@ -162,7 +189,13 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
     #show graph
     ax.set_xticklabels([])
     ax.set_yticklabels([])
-    ax.set_xlabel('Red = Bacterium\nGreen = Phages - Couple level Strain\nYellow = Phages - Couple level Species')
+    ax.set_xlabel('Rouge/Violet/Bleu/Orange/Gris = Bactéries' + 
+                    ' ----- Vert = Phages - Couple niveau souche'   + 
+                    ' ----- Noir = Phages - Couple niveau espèce'   +
+                    '\nNombre de phages différents : '          + str(len(nodes_phages))        +
+                    ' ----- Nombre de bactéries différentes : ' + str(len(nodes_bacterium))     +
+                    '\nNombre d\'espèces différentes : '        + str(len(number_of_species))   + 
+                    '\n'                                        + str(designation_of_species))
     
     #save graph in png or display it
     if is_png:

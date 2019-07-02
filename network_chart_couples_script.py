@@ -74,7 +74,7 @@ def networkChartCouplesScript(parameter_type:str):
     bacterium = []
 
     for couple in list_couples_lysis_type:
-        phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage))
+        phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation)
         #get the name of bacterium (strain designation + species designation)
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
         strain_designation = StrainJson.getByID(strain_id).designation

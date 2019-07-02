@@ -64,7 +64,7 @@ def networkChartOrganismScript(organism_id:int, is_phage=False):
         for couple in liste_couple:
                 if couple.lysis in lysis_type:
                         liste_couple_final.append(couple)
-
+        
         #=============================================================================================
         #=============================================================================================
 
@@ -74,7 +74,7 @@ def networkChartOrganismScript(organism_id:int, is_phage=False):
 
         for couple in liste_couple_final:
                 # get designation and phage id
-                phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation + '\n' + str(couple.bacteriophage))
+                phages.append(BacteriophageJson.getByID(couple.bacteriophage).designation)
                 # get the name of bacterium (strain designation + species designation) and his id
                 strain_id = BacteriumJson.getByID(couple.bacterium).strain
                 strain_designation = StrainJson.getByID(strain_id).designation
