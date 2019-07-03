@@ -279,7 +279,7 @@ def getSimilarityMatrix(list_organism_to_compare:list, file_name:str, path:str, 
         print(str(i) + "/" + str(len(list_organism_to_compare)) + " organism compared\n")
      
 
-    #get organism names
+    # get organism names
     organism_name = []
     if is_phage == True:
         for organism in list_organism_to_compare:
@@ -289,9 +289,7 @@ def getSimilarityMatrix(list_organism_to_compare:list, file_name:str, path:str, 
             strain = StrainJson.getByID(BacteriumJson.getByID(organism).strain)
             organism_name.append(SpecieJson.getByID(strain.specie).designation + " " + strain.designation)
 
-
-    # get bacterium's names
-
+    # save file
     df1 = pd.DataFrame(data=matrice_similarity, columns=organism_name, index=organism_name)
 
     if is_phage == True:
