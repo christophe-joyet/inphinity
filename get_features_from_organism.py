@@ -74,6 +74,8 @@ def getFeaturesForAPhage(phage:BacteriophageJson, active_percentage:bool=False, 
     list_prot = ProteinJson.getByOrganismID(phage.id)
     phage_amino_acid_dict = OrderedDict()
     protein_weight = 0
+    protein_aromatiticy = 0
+    protein_isoeletric_point = 0
 
     #get all amino acids of the phage
     for protein in list_prot:
@@ -92,6 +94,10 @@ def getFeaturesForAPhage(phage:BacteriophageJson, active_percentage:bool=False, 
         seq = seq.replace("X", "")
         analysed_seq = ProteinAnalysis(seq)
         protein_weight += analysed_seq.molecular_weight()
+        # get the aromaticity
+        protein_aromatiticy += analysed_seq.aromaticity()
+        # get isoeletric_point
+        protein_isoeletric_point += analysed_seq.isoelectric_point()
 
     # calcul mean
     tot_protein_of_the_phage = len(ProteinJson.getByOrganismID(phage.id))
@@ -105,6 +111,10 @@ def getFeaturesForAPhage(phage:BacteriophageJson, active_percentage:bool=False, 
 
         # put weight in dict
         dict_of_features['WEIGHT (Da)'] = protein_weight
+        # put aromaticity in dict
+        dict_of_features['AROMATICITY'] = protein_aromatiticy
+        # put isoelectric_point in dict
+        dict_of_features['ISOELECTRIC POINT'] = protein_isoeletric_point
 
     return dict_of_features
 
