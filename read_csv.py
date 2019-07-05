@@ -29,8 +29,9 @@ def read_csv_with_mean_features(csv_file, coordinates, phage_designation):
 
     :return: None
     """
+
     with open(csv_file, 'r') as f:
-        reader = csv.reader(f, delimiter=',')
+        reader = csv.reader(f, delimiter=';')
         for row in reader:
             if 'MEAN_AA_M' in row:
                 mean_aa_m = row.index('MEAN_AA_M')
@@ -71,7 +72,13 @@ def read_csv_with_mean_features(csv_file, coordinates, phage_designation):
             if 'MEAN_AA_G' in row:
                 mean_aa_g = row.index('MEAN_AA_G')
             if 'MEAN_AA_P' in row:
-                mean_aa_p = row.index('MEAN_AA_P')   
+                mean_aa_p = row.index('MEAN_AA_P')
+            if 'WEIGHT (Da)' in row:
+                weight = row.index('WEIGHT (Da)')
+            if 'ISOELECTRIC POINT' in row:
+                iso = row.index('ISOELECTRIC POINT')
+            if 'AROMATICITY' in row:
+                aromaticity = row.index('AROMATICITY')
             if 'MEAN_AA_X' in row:
                 mean_aa_x = row.index('MEAN_AA_X')
                 continue
@@ -86,9 +93,9 @@ def read_csv_with_mean_features(csv_file, coordinates, phage_designation):
                         float(row[mean_aa_i]),float(row[mean_aa_k]),float(row[mean_aa_l]),float(row[mean_aa_m]),
                         float(row[mean_aa_n]),float(row[mean_aa_p]),float(row[mean_aa_q]),float(row[mean_aa_r]),
                         float(row[mean_aa_s]),float(row[mean_aa_t]),float(row[mean_aa_v]),float(row[mean_aa_w]),
-                        float(row[mean_aa_x])]
+                        float(row[weight]), float(row[aromaticity]), float(row[iso]),float(row[mean_aa_x])]
 
             coordinates.append(couple)
             #add phages designation
-            phage_designation.append(BacteriophageJson.getByID(row[0]).designation)
+            phage_designation.append(row[0])
     f.close()
