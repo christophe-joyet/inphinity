@@ -12,9 +12,9 @@ from sklearn.cluster import estimate_bandwidth
 from sklearn.decomposition import PCA #Features Exctraction
 
 # =================================================================================================
-# /!\ WARNING : IF NO "MEAN_AA_X" IN FILE -> ADD IT /!\
+# /!\ WARNING : IF COLUMN "MEAN_AA_X" DOESN'T EXIST IN FILE -> ADD IT /!\
 # take data from csv file
-csv_file = '../../statistiques/CSV/Features_from_phages_in_Pseudomonas_aeruginosa_Muco16.csv'
+csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'
 
 list_mean_coord_X = []
 list_std_coord_Y = []
@@ -66,7 +66,7 @@ for k, col in zip(range(n_clusters_), colors):
              markeredgecolor='k', markersize=14)
 plt.xticks([])
 plt.yticks([])
-plt.title("Graph - K-MeanShift -  %d cluster(s) estimated" % n_clusters_)
+plt.title("K-MeanShift -  %d cluster(s) estimated" % n_clusters_)
 
 # =================================================================================================
 # display name of phages

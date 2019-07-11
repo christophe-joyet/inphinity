@@ -13,9 +13,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA #Features Exctraction
 
 # =================================================================================================
-# /!\ WARNING : IF NO "MEAN_AA_X" IN FILE -> ADD IT /!\
+# /!\ WARNING : IF COLUMN "MEAN_AA_X" DOESN'T EXIST IN FILE -> ADD IT /!\
 # take data from csv file
-csv_file = '../../statistiques/CSV/Features_from_phages_in_Pseudomonas_aeruginosa_Muco16.csv'
+csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'
 
 coordinates = []
 phage_designation = []
@@ -33,10 +33,10 @@ coordinates = pca.fit_transform(coordinates)
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(coordinates)
 # cluster the data
-dbscan = DBSCAN(eps=0.123, min_samples = 2)
+dbscan = DBSCAN(eps=0.250, min_samples = 2)
 clusters = dbscan.fit_predict(X_scaled)
 # plot the cluster assignments
-plt.scatter(coordinates[:, 0], coordinates[:, 1], c=clusters, cmap="plasma")
+plt.scatter(coordinates[:, 0], coordinates[:, 1], c=clusters, cmap="tab20")
 plt.xticks([])
 plt.yticks([])
 plt.title("Graph - DBSCAN")

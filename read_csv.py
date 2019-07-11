@@ -31,7 +31,7 @@ def read_csv_with_mean_features(csv_file, coordinates, phage_designation):
     """
 
     with open(csv_file, 'r') as f:
-        reader = csv.reader(f, delimiter=';')
+        reader = csv.reader(f, delimiter=',')
         for row in reader:
             if 'MEAN_AA_M' in row:
                 mean_aa_m = row.index('MEAN_AA_M')
@@ -73,14 +73,24 @@ def read_csv_with_mean_features(csv_file, coordinates, phage_designation):
                 mean_aa_g = row.index('MEAN_AA_G')
             if 'MEAN_AA_P' in row:
                 mean_aa_p = row.index('MEAN_AA_P')
-            if 'WEIGHT (Da)' in row:
-                weight = row.index('WEIGHT (Da)')
-            if 'ISOELECTRIC POINT' in row:
-                iso = row.index('ISOELECTRIC POINT')
-            if 'AROMATICITY' in row:
-                aromaticity = row.index('AROMATICITY')
             if 'MEAN_AA_X' in row:
                 mean_aa_x = row.index('MEAN_AA_X')
+            if 'MEAN_CE_H' in row:
+                mean_ce_h = row.index('MEAN_CE_H')
+            if 'MEAN_CE_N' in row:
+                mean_ce_n = row.index('MEAN_CE_N')
+            if 'MEAN_CE_O' in row:
+                mean_ce_o = row.index('MEAN_CE_O')
+            if 'MEAN_CE_C' in row:
+                mean_ce_c = row.index('MEAN_CE_C')
+            if 'MEAN_CE_S' in row:
+                mean_ce_s = row.index('MEAN_CE_S')
+            if 'WEIGHT (Da)' in row:
+                weight = row.index('WEIGHT (Da)')
+            if 'ISO POINT' in row:
+                iso_point = row.index('ISO POINT')
+            if 'AROMATICITY' in row:
+                aromaticity = row.index('AROMATICITY')
                 continue
 
             #handle empty case for X
@@ -93,7 +103,8 @@ def read_csv_with_mean_features(csv_file, coordinates, phage_designation):
                         float(row[mean_aa_i]),float(row[mean_aa_k]),float(row[mean_aa_l]),float(row[mean_aa_m]),
                         float(row[mean_aa_n]),float(row[mean_aa_p]),float(row[mean_aa_q]),float(row[mean_aa_r]),
                         float(row[mean_aa_s]),float(row[mean_aa_t]),float(row[mean_aa_v]),float(row[mean_aa_w]),
-                        float(row[weight]), float(row[aromaticity]), float(row[iso]),float(row[mean_aa_x])]
+                        float(row[mean_ce_h]),float(row[mean_ce_n]),float(row[mean_ce_o]),float(row[mean_ce_c]),
+                        float(row[mean_ce_s]),float(row[weight]),float(row[iso_point]),float(row[aromaticity])]
 
             coordinates.append(couple)
             #add phages designation

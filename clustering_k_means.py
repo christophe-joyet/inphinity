@@ -13,9 +13,9 @@ from sklearn.decomposition import PCA #Features Exctraction
 from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
 # =================================================================================================
-# /!\ WARNING : IF NO "MEAN_AA_X" IN FILE -> ADD IT /!\
+# /!\ WARNING : IF COLUMN "MEAN_AA_X" DOESN'T EXIST IN FILE -> ADD IT /!\
 # take data from csv file
-csv_file = '../../statistiques/CSV/Features_from_phages_in_Pseudomonas_aeruginosa_Muco16.csv'
+csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'
 
 coordinates = []
 phage_designation = []
@@ -64,7 +64,8 @@ coordinates = np.array(coordinates)
 #n_cluster => number of clusters we want.
 #n_init    => number of execution of the algorithm
 #max_iter  => number of iteration to find the center
-kmeans = KMeans(n_clusters=3, init='random', n_init=10, max_iter=100)
+n_clusters = 5
+kmeans = KMeans(n_clusters=n_clusters, init='random', n_init=10, max_iter=100)
 kmeans.fit(coordinates)
 y_kmeans = kmeans.predict(coordinates)
 
@@ -76,11 +77,11 @@ plt.scatter(centers[:, 0], centers[:, 1], c='black', s=200, alpha=0.5)
 
 #display phages' name
 for i, txt in enumerate(phage_designation):
-    plt.annotate(txt, (coordinates[i,0],coordinates[i,1]), size=12)
+    plt.annotate(txt, (coordinates[i,0],coordinates[i,1]), size=10)
 
 ax.set_xticklabels([])
 ax.set_yticklabels([])
-ax.set_title("Graph - K-Mean Algorithme with K = 3")
+ax.set_title("K-Mean Algorithm with K = " + str(n_clusters))
 
 
 plt.show()

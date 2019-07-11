@@ -33,7 +33,7 @@ def DisplayDendrogramFromMatrix(matrix_path:str, graph:str):
     
     if graph == "hierarchique":
         # Plot with Custom leaves
-        hierarchy.dendrogram(Z, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
+        hierarchy.dendrogram(Z, color_threshold=3, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
     elif graph == "heatmap":
         # Standardize or Normalize every column in the figure
         sns.heatmap(df, cmap="RdYlGn", square=True, xticklabels=True, yticklabels=True)
@@ -42,3 +42,5 @@ def DisplayDendrogramFromMatrix(matrix_path:str, graph:str):
 
     # Display
     plt.show()
+
+#DisplayDendrogramFromMatrix(matrix_path="../../similarite/similarite_70_phages_clear_lysis.csv", graph="hierarchique")

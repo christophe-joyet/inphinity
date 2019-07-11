@@ -67,12 +67,13 @@ def getFeaturesFromOrganismScript(file_name:str, path:str, organism_id:int=None,
         # get couple from specific bacterie
         organism_dict = {}
         # research bact or phage by ID
-        if is_phage == False:
+        if is_phage == False and organism_id != None:
                 organism_dict['bacterium'] = organism_id
-        else:
+                liste_couple = (CoupleJson.getCouplesByFilterParameter(organism_dict))
+        elif organism_id != None:
                 organism_dict['bacteriophage'] = organism_id
-        
-        liste_couple = (CoupleJson.getCouplesByFilterParameter(organism_dict))
+                liste_couple = (CoupleJson.getCouplesByFilterParameter(organism_dict))
+
 
         if organism_id != None:
                 # select couple in function of the lysis
@@ -116,3 +117,5 @@ def getFeaturesFromOrganismScript(file_name:str, path:str, organism_id:int=None,
 
         # =====================================================================================================
         # =====================================================================================================
+
+#getFeaturesFromOrganismScript(file_name="features_70_phages_clear_lysis.csv", path="../../extraction_features/AA_CE_WEIGHT")

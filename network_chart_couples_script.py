@@ -79,7 +79,7 @@ def networkChartCouplesScript(parameter_type:str):
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
         strain_designation = StrainJson.getByID(strain_id).designation
         specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
-        bacterium.append(specie_designation + '\n' +  strain_designation + '\n' + str(couple.bacterium))
+        bacterium.append(specie_designation + '-' +  strain_designation)# + '\n' + str(couple.bacterium))
 
     # network graph
     network.draw_graph(phages, bacterium, list_couples_lysis_type, graph_name='all_clear_lysis', is_png=False)

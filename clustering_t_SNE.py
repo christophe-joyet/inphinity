@@ -10,9 +10,9 @@ import csv
 import read_csv as rcsv
 
 # =================================================================================================
-# /!\ WARNING : IF NO "MEAN_AA_X" IN FILE -> ADD IT /!\
+# /!\ WARNING : IF COLUMN "MEAN_AA_X" DOESN'T EXIST IN FILE -> ADD IT /!\
 # take data from csv file
-csv_file = '../../statistiques/CSV/Features_from_phages_in_Pseudomonas_aeruginosa_Muco16.csv'
+csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'
 
 coordinates = []
 phage_designation = []
@@ -24,17 +24,14 @@ rcsv.read_csv_with_mean_features(csv_file, coordinates, phage_designation)
 # =================================================================================================
 
 X = np.array(coordinates)
-
 #reduce the matrix
-coordinates_embedded = TSNE(n_components=2, perplexity=5.0, learning_rate=500).fit_transform(coordinates)
+coordinates_embedded = TSNE(n_components=2, perplexity=25.0, learning_rate=50).fit_transform(coordinates)
 y_data = coordinates_embedded[:,1]
-plt.scatter(coordinates_embedded[:, 0], coordinates_embedded[:, 1], c=y_data)
+plt.scatter(coordinates_embedded[:, 0], coordinates_embedded[:, 1], c=y_data, cmap="tab10")
+
 plt.colorbar(orientation='horizontal', ticks=range(10))
 plt.clim(0, 10)
 plt.title("Graph - T-SNE")
-plt.xticks([])
-plt.yticks([])
-
 
 # =================================================================================================
 # display phages'name
