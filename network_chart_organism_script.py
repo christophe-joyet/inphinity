@@ -57,7 +57,7 @@ def networkChartOrganismScript(organism_id:int, is_phage=False):
         else:
                 organism_dict['bacteriophage'] = organism_id
 
-        liste_couple = (CoupleJson.getCouplesByFilterParameter(organism_dict)
+        liste_couple = (CoupleJson.getCouplesByFilterParameter(organism_dict))
 
         # select couple in function of the lysis
         liste_couple_final = []
@@ -83,5 +83,3 @@ def networkChartOrganismScript(organism_id:int, is_phage=False):
 
         # network graph
         network.draw_graph(phages, bacterium, liste_couple_final, graph_name='essai', is_png=False)
-
-networkChartOrganismScript(5106)
