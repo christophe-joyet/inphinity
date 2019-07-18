@@ -435,8 +435,8 @@ def getNucleotidicAlignmentLocalSequence(phage_A:int, phage_B:int, path:str, sim
 
     :type phage_A: int
     :type phage_B: int
-    :param similarity_min [0-1]: float value between 0.0 and 1.0
-    :param similarity_max [0-1]: float value between 0.0 and 1.0
+    :type similarity_min: float value between 0.0 and 1.0
+    :tpye similarity_max: float value between 0.0 and 1.0
     """
     # for the ending message
     isSomethingCompared = 0

@@ -1,124 +1,96 @@
+#!/usr/bin/env python
+# encoding: utf-8
 
-import pandas as pd
-import numpy as np
-import os
+import os 
+
 import constants
-
+import matrix_similarity as ms
 from configuration.configuration_api import ConfigurationAPI
 from rest_client.AuthenticationRest import AuthenticationAPI
-
-from objects_API.CoupleJ import CoupleJson
-from objects_API.BacteriumJ import BacteriumJson
-from objects_API.OrganismJ import OrganismJson
-from objects_API.BacteriophageJ import BacteriophageJson
-from objects_API.StrainJ import StrainJson
-from objects_API.SpecieJ import SpecieJson
 from objects_API.ProteinJ import ProteinJson
-from objects_API.WholeDNAJ import WholeDNAJson
-from objects_API.ContigJ import ContigJson
-import network_chart_couples_cl as network
-import time
-import matrix_similarity as ms
-from Bio import Entrez
-from Bio import Align 
-from Bio.Seq import Seq
-from Bio.Alphabet import IUPAC
-from Bio import pairwise2
-from Bio.pairwise2 import format_alignment
-from Bio.SubsMat.MatrixInfo import blosum62
-
-from skbio.alignment import StripedSmithWaterman 
-from skbio.alignment import AlignmentStructure
 
 conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
-Entrez.email = "christophe.joyet@heig-vd.ch"
 
-def getbestprot(organism_id_list:list, similarity_min=0.70, similarity_max=1.0):
+def getbestprot(organism_id_list:list, similarity_min=0.90, similarity_max=1.0):
     """
+    Get the proteins who create the similarity inside a groupe of organisms
+
+    :param organism_id_list: list of organisms' id
+    :param similarity_min: similarity min between two proteins
+    :param similarity_max: similarity max between two proteins
+
+    :param organism_id_list: list of int
+    :type similarity_min: float value between 0.0 and 1.0
+    :type similarity_max: float value between 0.0 and 1.0
     
     """
-    protein_list = []
-    matrix = []
 
-    #récupérer les protéines des phages
+    protein_list = []
+    list_of_list_of_couples_grouped_by_organisms = []
+    number_of_organisms = len(organism_id_list)
+    # Get all the proteins of the organisms
     for organism in organism_id_list:
-        # get all the protein of the organisms
         protein_list.append(ProteinJson.getByOrganismID(organism))
     
-    first_list_of_list_of_couple = [[] for i in range (len(organism_id_list) - 1)]
+    # This list will contain the paires of the proteins relative to organism
+    # The first list represent the paires formed by protein of the first 
+    # organism and the second organism. 
+    # The second list represent the paires formed by protein of the first
+    # organism and the third organism...
+    list_of_couples_grouped_by_organisms = [[] for i in range (number_of_organisms - 1)]
 
-    # récupérer les couples 
-    for protein_phage_1 in protein_list[0]:
-        for i in range (1, len(organism_id_list)):
+    # Get the proteins of the first organism and make couples
+    for protein_of_first_organism in protein_list[0]:
+        for i in range (1, number_of_organisms):  # Begin at 1 to not compare the protein of first organism between them
             for protein_phage_n in protein_list[i]:
-                #si les on a une correspondance de plus d'un certain pourcentage 
-                similarity_score = ms.getSimilarityScoreTwoProteinLocalAlign(protein_phage_1, protein_phage_n)
+                # Compare proteins to get similarity
+                similarity_score = ms.getSimilarityScoreTwoProteinLocalAlign(protein_of_first_organism, protein_phage_n)
+                # Check if similarity is include between the thresholds
                 if similarity_score >= similarity_min and similarity_score <= similarity_max:
-                    # creation d'un couple
-                    couple = [protein_phage_1.sequence_AA, protein_phage_n.sequence_AA]
-                    first_list_of_list_of_couple[i-1].append(couple)
+                    couple = [protein_of_first_organism.sequence_AA, protein_phage_n.sequence_AA]  # Creation of couple
+                    list_of_couples_grouped_by_organisms[i-1].append(couple) # Add the couple in the correct
     
-    matrix.append(first_list_of_list_of_couple)
+    list_of_list_of_couples_grouped_by_organisms.append(list_of_couples_grouped_by_organisms)
 
-    print(len(matrix[0]))
-    for i in range (len(organism_id_list) - 2):
-        print("BOU")
-        matrix.append(foo(matrix[i], 4, similarity_min=0.70, similarity_max=1.0))
-
-
-    '''
-    first_list_of_list_of_couple = [[] for i in range (len(organism_id_list) - 1)]
-
-    # Comparaison de chaque protéines du premier phage avec les autres
-    for protein_phage_1 in protein_list[0]:
-        for i in range (1, len(organism_id_list)):
-            for protein_phage_n in protein_list[i]:
-                #si les on a une correspondance de plus d'un certain pourcentage 
-                similarity_score = ms.getSimilarityScoreTwoProteinLocalAlign(protein_phage_1, protein_phage_n)
-                if similarity_score >= similarity_min and similarity_score <= similarity_max:
-                    # creation d'un couple
-                    couple = [protein_phage_1.sequence_AA, protein_phage_n.sequence_AA]
-                    first_list_of_list_of_couple[i-1].append(couple)
-
-    # [[(phage1_prot1, phage2_protX), (phage1_prot2, phage2_protV),...], [(phage1_prot1, phage3_protY), (phage1_prot2, phage3_protK), ...]]
-
+    # Create the chain of similarity between proteins
+    for i in range (number_of_organisms - 2):
+        list_of_list_of_couples_grouped_by_organisms.append(getSimilarityProteinChain(list_of_list_of_couples_grouped_by_organisms[i], number_of_organisms, similarity_min, similarity_max))
     
-    second_list_of_list_of_couple = [[] for i in range (len(organism_id_list) - 2)]
 
-    for couple in first_list_of_list_of_couple[0]:
-        for i in range (1, len(first_list_of_list_of_couple)):
-            for j in range (len(first_list_of_list_of_couple[i])):
-                if couple[0] == first_list_of_list_of_couple[i][j][0]: # trouver les séquences du phages_1 identiques dans les deux couples des listes
-                    similarity_score = ms.getSimilarityScoreTwoProteinLocalAlignText(couple[1], first_list_of_list_of_couple[i][j][1])
-                    if similarity_score >= similarity_min and similarity_score <= similarity_max:
-                        # creation d'un couple
-                        couple = [couple[0], couple[1], first_list_of_list_of_couple[i][j][1]]
-                        second_list_of_list_of_couple[i-1].append(couple)
-    '''
+def getSimilarityProteinChain(list_of_couples_grouped_by_organisms:list, number_of_organisms:int, similarity_min=0.70, similarity_max=1.0):
+    """
+    Get a list with couples of n proteique sequences resulting from
+    comparison between the proteins from list_of_couples_grouped_by_organisms.
+    (n = number_of_organisms - list_of_couples_grouped_by_organisms)
+
+
+    :param list_of_couples_grouped_by_organisms: list of list of couples
+    :param similarity_min: similarity min between two proteins
+    :param similarity_max: similarity max between two proteins
+
+    :param list_of_couples_grouped_by_organisms: list
+    :type similarity_min: float value between 0.0 and 1.0
+    :type similarity_max: float value between 0.0 and 1.0
     
-    print("tot prot phage 1 : " + str(len(protein_list[0])))
-    print("tot prot phage 2 : " + str(len(protein_list[1])))
-    print("tot prot phage 3 : " + str(len(protein_list[2])))
-    '''print("tot couple phage 1 - 2 : " + str(len(first_list_of_list_of_couple[0])))
-    print("tot couple phage 1 - 3 : " + str(len(first_list_of_list_of_couple[1])))
-    print("tot couple phage 1,2,3 : " + str(len(second_list_of_list_of_couple[0])))'''
+    """
+    number_of_organisms -= 1
+    final_list_of_list_of_couples = [[] for i in range (len(list_of_couples_grouped_by_organisms) - 1)]
 
-def foo(first_list_of_list_of_couple:list, nombre_organismes:int, similarity_min=0.70, similarity_max=1.0):
-
-    second_list_of_list_of_couple = [[] for i in range (len(first_list_of_list_of_couple) - 1)]
-
-    for couple in first_list_of_list_of_couple[0]:
-        for i in range (1, len(first_list_of_list_of_couple)):
-            for j in range (len(first_list_of_list_of_couple[i])):
-                    if couple[nombre_organismes - len(first_list_of_list_of_couple)] == first_list_of_list_of_couple[i][j][nombre_organismes - len(first_list_of_list_of_couple)]: # trouver les séquences du phages_1 identiques dans les deux couples des listes
-                        similarity_score = ms.getSimilarityScoreTwoProteinLocalAlignText(couple[nombre_organismes - len(first_list_of_list_of_couple) + 1], first_list_of_list_of_couple[i][j][nombre_organismes - len(first_list_of_list_of_couple) + 1])
+    for couple in list_of_couples_grouped_by_organisms[0]:
+        for i in range (1, len(list_of_couples_grouped_by_organisms)):
+            for j in range (len(list_of_couples_grouped_by_organisms[i])):
+                    if couple[number_of_organisms - len(list_of_couples_grouped_by_organisms)] == list_of_couples_grouped_by_organisms[i][j][number_of_organisms - len(list_of_couples_grouped_by_organisms)]: # trouver les séquences du phages_1 identiques dans les deux couples des listes
+                        similarity_score = ms.getSimilarityScoreTwoProteinLocalAlignText(couple[number_of_organisms - len(list_of_couples_grouped_by_organisms) + 1], list_of_couples_grouped_by_organisms[i][j][number_of_organisms - len(list_of_couples_grouped_by_organisms) + 1])
                         if similarity_score >= similarity_min and similarity_score <= similarity_max:
                             # creation d'un couple
-                            couple = [couple, first_list_of_list_of_couple[i][j][nombre_organismes - len(first_list_of_list_of_couple) + 1]]
-                            second_list_of_list_of_couple[i-1].append(couple)
-    
-    return second_list_of_list_of_couple
+                            couple2 = []
+                            for k in range (number_of_organisms - len(list_of_couples_grouped_by_organisms) + 2):
+                                couple2.append(couple[k])
+                            couple2.append(list_of_couples_grouped_by_organisms[i][j][number_of_organisms - len(list_of_couples_grouped_by_organisms) + 1])
+                            final_list_of_list_of_couples[i-1].append(couple2)
 
-getbestprot([5038,5030,5023,5045])
+    return final_list_of_list_of_couples
+
+getbestprot([5038,5030,5023,5045,5024])
