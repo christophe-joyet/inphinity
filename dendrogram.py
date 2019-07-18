@@ -1,8 +1,9 @@
+#!/usr/bin/env python
+# encoding: utf-8
 # File : dendogram.py
 # Author : Christophe Joyet
 # Date : Mai 2019
 
-# Libraries
 from matplotlib import pyplot as plt
 from scipy.cluster import hierarchy
 from scipy.cluster.hierarchy import dendrogram, linkage
@@ -33,14 +34,14 @@ def DisplayDendrogramFromMatrix(matrix_path:str, graph:str):
     
     if graph == "hierarchique":
         # Plot with Custom leaves
-        hierarchy.dendrogram(Z, color_threshold=3, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
+        hierarchy.dendrogram(Z, color_threshold=1250000, orientation="right", leaf_rotation=0, leaf_font_size=8, labels=df.index)
     elif graph == "heatmap":
         # Standardize or Normalize every column in the figure
         sns.heatmap(df, cmap="RdYlGn", square=True, xticklabels=True, yticklabels=True)
     elif graph == "clustermap":
-        sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward")
-
+        sns.set(font_scale=0.5)
+        sns.clustermap(df, metric="euclidean", standard_scale=1, method="ward", yticklabels=True, xticklabels=True, annot=True)
     # Display
     plt.show()
 
-#DisplayDendrogramFromMatrix(matrix_path="../../similarite/similarite_70_phages_clear_lysis.csv", graph="hierarchique")
+DisplayDendrogramFromMatrix(matrix_path="similarite_70_phages_clear_lysis.csv", graph="clustermap")

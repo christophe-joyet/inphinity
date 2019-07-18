@@ -140,6 +140,75 @@ def getSimilarityScoreTwoProteinLocalAlign(proteinA:ProteinJson, proteinB:Protei
     score_max = int(str(aligner_score_max).split(" ")[1])
     return score / score_max
 
+def getSimilarityScoreTwoProteinLocalAlignText(proteinA:str, proteinB:str):
+    """
+    get similarity score between two proteins with local alignment
+
+    :param proteinA: protein A
+    :param proteinB: protein B to compare to protein A
+
+    :type proteinA: ProteinJson
+    :type phage_B: ProteinJson
+
+    :return: similarity score between two phage
+    :rtype: float16   
+    """
+    # =======================================================================
+    # Align the two sequences with PairWise2 Library
+    # =======================================================================
+
+    # IUPAC provides some informations about the sequence AA
+    # ProteinA_sequence_AA = Seq(proteinA.sequence_AA, IUPAC.protein)
+    # ProteinB_sequence_AA = Seq(proteinB.sequence_AA, IUPAC.protein)
+
+    # Match parameters :
+    #   x     No parameters. Identical characters have score of 1, otherwise 0.
+    #   m     A match score is the score of identical chars, otherwise mismatch
+    #         score.
+    #   d     A dictionary returns the score of any pair of characters.
+    #   c     A callback function returns scores.
+        
+    # GAP penalty parameters :
+    #   x     No gap penalties.
+    #   s     Same open and extend gap penalties for both sequences.
+    #   d     The sequences have different open and extend gap penalties.
+    #   c     A callback function returns the gap penalties.
+    
+    # Do a global alignment. 
+    # 1 point is given for identical characters
+    # 0 point is deducted for each non-identical character. 
+    # 1 point is deducted for each open gaps.
+    # 0.5 point is deducted for each extended gaps.
+    # aligner = pairwise2.align.localds(ProteinA_sequence_AA, ProteinB_sequence_AA, blosum62, -1, -0.5)
+    # aligner = pairwise2.align.localxx(ProteinA_sequence_AA, ProteinB_sequence_AA)
+    # aligner = pairwise2.align.localms(ProteinA_sequence_AA, ProteinB_sequence_AA, 1, 0, -1, -0.5)
+
+    # get the score and the length of sequence
+    # for a in aligner:
+    #   al1, al2, score, begin, end = a
+
+    # get the score with ponderation WITH BLOSUM62
+    # perfect_score = pairwise2.align.localds(ProteinA_sequence_AA, ProteinA_sequence_AA, blosum62, -10, -1, score_only=True)
+    # return ((score / perfect_score) * ((end - begin) / len(al1)))
+
+    # get the score with ponderation WITHOUT BLOSUM62
+    # return ((score / len(al1)) * ((end - begin) / len(al1)))
+
+    # =======================================================================
+    # Align the two sequences with Skbio
+    # =======================================================================
+
+    # using optimized Smit-Waterman
+    query = StripedSmithWaterman(proteinA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=10, gap_extend_penalty=1, score_only=True)
+    queryscoremax = StripedSmithWaterman(proteinA, protein=True, substitution_matrix=striped_mx, gap_open_penalty=10, gap_extend_penalty=1, score_only=True)
+    aligner_score = query(proteinB)
+    aligner_score_max = queryscoremax(proteinA)
+
+    # get scores from the return of query functions
+    score = int(str(aligner_score).split(" ")[1])
+    score_max = int(str(aligner_score_max).split(" ")[1])
+    return score / score_max
+
 # ==============================================================================
 # ==============================================================================
 
@@ -399,6 +468,7 @@ def getNucleotidicAlignmentLocalSequence(phage_A:int, phage_B:int, path:str, sim
 # ============================================================================== Test Area ============================================================================== 
 # getProteiqueAlignmentLocalSequence(5287, 5285, similarity_min=0.9, similarity_max=0.99, path="../../similarite/")
 # getNucleotidicAlignmentLocalSequence(5287, 5285, similarity_min=0.9, similarity_max=0.99, path="../../similarite/")
+# print(getSimilarityScoreTwoPhages(5287, 5285))
 
 
 

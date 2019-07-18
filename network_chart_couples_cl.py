@@ -92,7 +92,7 @@ def draw_graph(phages:list, bacterium:list, list_couples_lysis_type:list,
         strain_id = BacteriumJson.getByID(couple.bacterium).strain
         strain_designation = StrainJson.getByID(strain_id).designation
         specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
-        bacterium_designation = specie_designation + '-' +  strain_designation# + '\n' + str(couple.bacterium)
+        bacterium_designation = specie_designation + '-' +  strain_designation + '\n' + str(couple.bacterium)
        
         # get bact' designation
         if not bacterium_designation in nodes_bacterium:

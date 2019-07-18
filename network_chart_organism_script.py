@@ -57,7 +57,14 @@ def networkChartOrganismScript(organism_id:int, is_phage=False):
         else:
                 organism_dict['bacteriophage'] = organism_id
 
-        liste_couple = (CoupleJson.getCouplesByFilterParameter(organism_dict))
+        liste_couple = (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5290}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5293}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5312}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5316}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5284}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5296}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5311}))
+        liste_couple += (CoupleJson.getCouplesByFilterParameter({'bacteriophage' : 5304}))
 
         # select couple in function of the lysis
         liste_couple_final = []
@@ -79,7 +86,8 @@ def networkChartOrganismScript(organism_id:int, is_phage=False):
                 strain_id = BacteriumJson.getByID(couple.bacterium).strain
                 strain_designation = StrainJson.getByID(strain_id).designation
                 specie_designation = SpecieJson.getByID(StrainJson.getByID(strain_id).specie).designation
-                bacterium.append(specie_designation + '-' +  strain_designation)# + '\n' + str(couple.bacterium))
+                bacterium.append(specie_designation + '-' +  strain_designation + '\n' + str(couple.bacterium))
 
         # network graph
         network.draw_graph(phages, bacterium, liste_couple_final, graph_name='essai', is_png=False)
+

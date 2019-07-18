@@ -33,7 +33,7 @@ coordinates = pca.fit_transform(coordinates)
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(coordinates)
 # cluster the data
-dbscan = DBSCAN(eps=0.250, min_samples = 2)
+dbscan = DBSCAN(eps=0.5, min_samples = 2)
 clusters = dbscan.fit_predict(X_scaled)
 # plot the cluster assignments
 plt.scatter(coordinates[:, 0], coordinates[:, 1], c=clusters, cmap="tab20")
