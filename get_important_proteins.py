@@ -13,7 +13,7 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
-def getbestprot(organism_id_list:list, similarity_min=0.90, similarity_max=1.0):
+def getbestprot(organism_id_list:list, similarity_min=0.99, similarity_max=1.0):
     """
     Get the proteins who create the similarity inside a groupe of organisms
 
@@ -25,10 +25,12 @@ def getbestprot(organism_id_list:list, similarity_min=0.90, similarity_max=1.0):
     :type similarity_min: float value between 0.0 and 1.0
     :type similarity_max: float value between 0.0 and 1.0
     
+    :return: list of list of tuples grouped by organisms
+    :rtype: list 
     """
 
     protein_list = []
-    list_of_list_of_couples_grouped_by_organisms = []
+    list_of_list_of_tuples_grouped_by_organisms = []
     number_of_organisms = len(organism_id_list)
     # Get all the proteins of the organisms
     for organism in organism_id_list:
@@ -52,14 +54,15 @@ def getbestprot(organism_id_list:list, similarity_min=0.90, similarity_max=1.0):
                     couple = [protein_of_first_organism.sequence_AA, protein_phage_n.sequence_AA]  # Creation of couple
                     list_of_couples_grouped_by_organisms[i-1].append(couple) # Add the couple in the correct
     
-    list_of_list_of_couples_grouped_by_organisms.append(list_of_couples_grouped_by_organisms)
+    list_of_list_of_tuples_grouped_by_organisms.append(list_of_couples_grouped_by_organisms)
 
     # Create the chain of similarity between proteins
     for i in range (number_of_organisms - 2):
-        list_of_list_of_couples_grouped_by_organisms.append(getSimilarityProteinChain(list_of_list_of_couples_grouped_by_organisms[i], number_of_organisms, similarity_min, similarity_max))
+        list_of_list_of_tuples_grouped_by_organisms.append(getSimilarityProteinChain(list_of_list_of_tuples_grouped_by_organisms[i], number_of_organisms, similarity_min, similarity_max))
     
+    return list_of_list_of_tuples_grouped_by_organisms
 
-def getSimilarityProteinChain(list_of_couples_grouped_by_organisms:list, number_of_organisms:int, similarity_min=0.70, similarity_max=1.0):
+def getSimilarityProteinChain(list_of_tuples_grouped_by_organisms:list, index_of_organisms:int, similarity_min=0.70, similarity_max=1.0):
     """
     Get a list with couples of n proteique sequences resulting from
     comparison between the proteins from list_of_couples_grouped_by_organisms.
@@ -75,22 +78,49 @@ def getSimilarityProteinChain(list_of_couples_grouped_by_organisms:list, number_
     :type similarity_max: float value between 0.0 and 1.0
     
     """
-    number_of_organisms -= 1
-    final_list_of_list_of_couples = [[] for i in range (len(list_of_couples_grouped_by_organisms) - 1)]
+    index_of_organisms -= 1
+    number_of_list_of_couple = len(list_of_tuples_grouped_by_organisms)
 
-    for couple in list_of_couples_grouped_by_organisms[0]:
-        for i in range (1, len(list_of_couples_grouped_by_organisms)):
-            for j in range (len(list_of_couples_grouped_by_organisms[i])):
-                    if couple[number_of_organisms - len(list_of_couples_grouped_by_organisms)] == list_of_couples_grouped_by_organisms[i][j][number_of_organisms - len(list_of_couples_grouped_by_organisms)]: # trouver les séquences du phages_1 identiques dans les deux couples des listes
-                        similarity_score = ms.getSimilarityScoreTwoProteinLocalAlignText(couple[number_of_organisms - len(list_of_couples_grouped_by_organisms) + 1], list_of_couples_grouped_by_organisms[i][j][number_of_organisms - len(list_of_couples_grouped_by_organisms) + 1])
+    final_list_of_list_of_couples = [[] for i in range (number_of_list_of_couple - 1)]
+
+    # Compare all the couple of the first organism with all the couples of the others organisms
+    for couple in list_of_tuples_grouped_by_organisms[0]:
+        # Browse all the lists
+        for i in range (1, number_of_list_of_couple):
+            for j in range (len(list_of_tuples_grouped_by_organisms[i])):
+                    # Compare the penultimate element of the couples between them 
+                    # If they're equals make similarity between the last elements added to try to create a new couple
+                    if couple[index_of_organisms - number_of_list_of_couple] == list_of_tuples_grouped_by_organisms[i][j][index_of_organisms - number_of_list_of_couple]: 
+                        # Compare proteins to get similarity
+                        similarity_score = ms.getSimilarityScoreTwoProteinLocalAlignText(couple[index_of_organisms - number_of_list_of_couple + 1], list_of_tuples_grouped_by_organisms[i][j][index_of_organisms - number_of_list_of_couple + 1])
+                        # Check if similarity is include between the thresholds
                         if similarity_score >= similarity_min and similarity_score <= similarity_max:
-                            # creation d'un couple
-                            couple2 = []
-                            for k in range (number_of_organisms - len(list_of_couples_grouped_by_organisms) + 2):
-                                couple2.append(couple[k])
-                            couple2.append(list_of_couples_grouped_by_organisms[i][j][number_of_organisms - len(list_of_couples_grouped_by_organisms) + 1])
-                            final_list_of_list_of_couples[i-1].append(couple2)
+                            # Creation of a tuple
+                            new_tuple = []
+                            # Add the olds proteique sequences to the new tuple
+                            for k in range (index_of_organisms - number_of_list_of_couple + 2):
+                                new_tuple.append(couple[k])
+                            new_tuple.append(list_of_tuples_grouped_by_organisms[i][j][index_of_organisms - number_of_list_of_couple + 1])
+                            final_list_of_list_of_couples[i-1].append(new_tuple)
 
     return final_list_of_list_of_couples
 
-getbestprot([5038,5030,5023,5045,5024])
+matrix = getbestprot([5038,5030,5023,5045,5024])
+
+print(len(matrix[0]))
+print(len(matrix[1]))
+print(len(matrix[2]))
+print(len(matrix[3]))
+print(len(matrix[0][0]))
+print(len(matrix[0][1]))
+print(len(matrix[0][2]))
+print(len(matrix[0][3]))
+print(len(matrix[1][0]))
+print(len(matrix[1][1]))
+print(len(matrix[1][2]))
+print(len(matrix[2][0]))
+print(len(matrix[2][1]))
+print(len(matrix[3][0]))
+
+print(matrix[3][0])
+

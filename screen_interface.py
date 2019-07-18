@@ -78,7 +78,7 @@ liste_lysis_couple.place(x=320, y=10)
 # Cadre 3
 Cadre_3 = LabelFrame(fenetre, text="Create Matrix Similarity", height=125, width=550, relief=GROOVE, labelanchor='n')
 
-# organism_id_1_network_chart_script
+# organism_id_2_network_chart_script
 organism_id_2_txt = Label(Cadre_3, text = 'Organism id :', width=20)
 organism_id_2_value = IntVar() 
 organism_id_2 = Entry(Cadre_3, textvariable=organism_id_2_value, width=20)
@@ -94,7 +94,7 @@ file_name_1_value = StringVar()
 file_name_1 = Entry(Cadre_3, textvariable=file_name_1_value, width=20)
 
 # bouton matrice
-bouton_matrix=Button(Cadre_3, text="Create similitary matrix", command= lambda: mss.matrixSimilarityScript(file_name=file_name_1.get(), path=path_1.get(), organism_id=organism_id_1.get(), is_phage=is_phage_1_value.get()))
+bouton_matrix=Button(Cadre_3, text="Create similitary matrix", command= lambda: mss.matrixSimilarityScript(file_name=file_name_1.get(), path=path_1.get(), organism_id=organism_id_2.get(), is_phage=is_phage_2_value.get()))
 
 # checkbutton_network_chart_script
 is_phage_2_value = IntVar()
