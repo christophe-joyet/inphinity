@@ -1,6 +1,8 @@
 #!/usr/bin/env python
-# encoding: utf-8
+# -*- coding: utf-8 -*-
 
+import sys
+sys.path.insert(0, '../inphinity')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -11,7 +13,7 @@ from sklearn.cluster import MeanShift
 from sklearn.cluster import estimate_bandwidth
 from sklearn.decomposition import PCA # Using for features exctraction
 
-import get_features_from_csv as gfcsv
+from features import get_features_from_csv as gfcsv
 
 csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'  # Take data from csv file
 matrix_of_features = []
