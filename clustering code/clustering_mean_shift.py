@@ -13,16 +13,16 @@ from sklearn.cluster import MeanShift
 from sklearn.cluster import estimate_bandwidth
 from sklearn.decomposition import PCA # Using for features exctraction
 
-from features import get_features_from_csv as gfcsv
+from features import features_functions
 
 csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'  # Take data from csv file
 matrix_of_features = []
 organisms_designation = []
 
 # Fill the matrix with data and add phage designation
-gfcsv.get_features(csv_file=csv_file, 
-                   matrix_of_features=matrix_of_features, 
-                   organisms_designation=organisms_designation) 
+features_functions.createMatrixFeatures(csv_file=csv_file, 
+                                        matrix_of_features=matrix_of_features, 
+                                        organisms_designation=organisms_designation) 
 pca = PCA(n_components=2)  # We want a 2D representation so we'll reduce our matrice to 2 components
 matrix_of_features = pca.fit_transform(matrix_of_features) 
 matrix_of_features = np.array(matrix_of_features) # Transform the matrix in a 2D array

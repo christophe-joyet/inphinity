@@ -5,7 +5,7 @@ import network_chart_organism_script as ncos
 import network_chart_couples_script as nccs
 import matrix_similarity_script as mss
 import get_features_from_organism_script as ftrs
-import dendrogram
+import display_graphic
 
 
 def openpath(e:Entry):
@@ -178,8 +178,8 @@ path_3_txt = Label(Cadre_5, text = 'File + Path :', width=20)
 path_3_value = StringVar() 
 path_3 = Entry(Cadre_5, textvariable=path_3_value, width=20)
 
-# bouton dendogram
-bouton_dendogram=Button(Cadre_5, text="Display graph", command= lambda: dendrogram.DisplayDendrogramFromMatrix(path_3_value.get(), liste_graphique_value.get()))
+# bouton graphic
+bouton_graphic=Button(Cadre_5, text="Display graph", command= lambda: display_graphic.DisplayGraphicFromMatrix(path_3_value.get(), liste_graphique_value.get()))
 
 # bouton open path 
 bouton_open_path=Button(Cadre_5, text="Choose csv file", command= lambda: openpath(path_3_value))
@@ -194,12 +194,7 @@ liste_graphique.pack()
 liste_graphique.place(x=300, y=30)
 bouton_open_path.pack()
 bouton_open_path.place(x=150, y=30)
-bouton_dendogram.pack()
-bouton_dendogram.place(x=10,y=30)
-
-
-# ================================================================
-# 
-# ================================================================
+bouton_graphic.pack()
+bouton_graphic.place(x=10,y=30)
 
 fenetre.mainloop()
