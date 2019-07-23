@@ -2,7 +2,7 @@
 
 import os
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 import pandas as pd
 import csv
 
@@ -216,7 +216,7 @@ def getAllChemicalStructureOfAminoAcids(amino_acid:str):
     # ENCYCLOPAEDIA BRITANNICA [en ligne]. 20 Juillet 1998. 
     # [Consulté le 27 février 2019]. Disponible à l'adresse : https://www.britannica.com/science/amino-acid
     
-    #dict contains 20 proteins with their molecules
+    # Dict contains 20 proteins with their molecules
     molecule_amino_acid = { 'A':{
                                 'H' : 7,
                                 'N' : 1,
@@ -354,33 +354,33 @@ def getFrequenceAllAminoAcidForAProtein(protein:ProteinJson):
     :return: all the frequences of each amino acids and chemicals elements of the given protein
     :rtype: dictionnary {name amino acid : frequence}
     """
-    #dictionnary {amino acid : occurence} + {chimical element : occurence}
+    # Dictionnary {amino acid : occurence} + {chimical element : occurence}
     protein_amino_acid_dict = OrderedDict()
     protein_chemical_element_dict = OrderedDict()
 
-    #get the proteique sequence of current prot
+    # Get the proteique sequence of current prot
     sequence_of_amino_acid = protein.sequence_AA
 
-    #count all the amino acid in the sequence
+    # Count all the amino acid in the sequence
     for amino_acid in sequence_of_amino_acid:
         if not amino_acid in protein_amino_acid_dict.keys():
             protein_amino_acid_dict[amino_acid] = 1
         else:
             protein_amino_acid_dict[amino_acid] += 1
-
-        #get chemical element of amino acid
+    
+        # Get chemical element of amino acid
         protein_chemical_element_dict = Counter(Counter(getAllChemicalStructureOfAminoAcids(amino_acid)) + Counter(protein_chemical_element_dict))
 
-    #transform the occurence of each amino acids in frequence
+    # Transform the occurence of each amino acids in frequence
     for amino_acid_key, amino_acid_value in protein_amino_acid_dict.items():
         #divide the occurence by the length of the sequence
         protein_amino_acid_dict[amino_acid_key] = amino_acid_value / len(protein.sequence_AA)
     
-    #transform the occurence of each chemical element in frequence
+    # Transform the occurence of each chemical element in frequence
     total_chemical_elements = protein_chemical_element_dict['H'] + protein_chemical_element_dict['O'] + protein_chemical_element_dict['N'] + protein_chemical_element_dict['C'] + protein_chemical_element_dict['S']
 
     for chemical_element_key, chemical_element_value in protein_chemical_element_dict.items():
-        #divide the occurence by the length of the sequence
+        # Divide the occurence by the length of the sequence
         protein_chemical_element_dict[chemical_element_key] = chemical_element_value / total_chemical_elements 
 
     return protein_amino_acid_dict, protein_chemical_element_dict
@@ -408,11 +408,11 @@ def getFeaturesForAPhage(phage:BacteriophageJson, active_percentage:bool=False, 
     protein_aromatiticy = 0
     protein_isoeletric_point = 0
 
-    #get all amino acids of the phage
+    # Get all amino acids of the phage
     for protein in list_prot:
         protein_amino_acids, protein_chemical_element = getFrequenceAllAminoAcidForAProtein(protein)
          
-        #add values from two dictionnaries in one
+        # Add values from two dictionnaries in one
         # Source : 
         # MSEIFERT [Pseudonyme], 2017. You can use collections.Counter which implements addition + that way. 
         # Stackoverflow [en ligne]. 16 août 2017 à 2h29. 
@@ -431,25 +431,30 @@ def getFeaturesForAPhage(phage:BacteriophageJson, active_percentage:bool=False, 
         # get isoeletric_point
         protein_isoeletric_point += analysed_seq.isoelectric_point()
 
-    # calcul mean
+    # Calcul mean
     tot_protein_of_the_phage = len(ProteinJson.getByOrganismID(phage.id))
     
-    # dict contained mean std and weight for the phage
+    # Dict contained mean std and weight for the phage
     dict_of_features = {}
     if get_features == True:
-        # calcul mean of each amino acid and chemical element
+        # Calcul mean of each amino acid and chemical element
         for amino_acid_key in phage_amino_acid_dict.keys():
             dict_of_features['MEAN_AA_' + str(amino_acid_key)] = phage_amino_acid_dict[amino_acid_key] / tot_protein_of_the_phage
         
         for chemical_element_key in phage_chemical_element_dict.keys():
             dict_of_features['MEAN_CE_' + str(chemical_element_key)] = phage_chemical_element_dict[chemical_element_key] / tot_protein_of_the_phage
 
-        # put weight in dict
+        # Put weight in dict
         dict_of_features['WEIGHT (Da)'] = protein_weight
-        # put aromaticity in dict
+        # Put aromaticity in dict
         dict_of_features['AROMATICITY'] = protein_aromatiticy
-        # put isoelectric_point in dict
+        # Put isoelectric_point in dict
         dict_of_features['ISO POINT'] = protein_isoeletric_point
+
+        if 'MEAN_AA_X' not in dict_of_features.keys():
+            dict_of_features['MEAN_AA_X'] = 0
+        if 'MEAN_CE_Unknow' not in dict_of_features.keys():
+            dict_of_features['MEAN_CE_Unknow'] = 0
 
     return dict_of_features
 

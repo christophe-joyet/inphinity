@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 
 from objects_API.CoupleJ import CoupleJson
 from objects_API.StrainJ import StrainJson

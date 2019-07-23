@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 import pandas as pd
 import numpy as np
 from matplotlib import pyplot as plt

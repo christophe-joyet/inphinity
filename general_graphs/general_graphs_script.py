@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 import matplotlib.pyplot as plt
 
-import functions
-from general_graphics import constants
+import general_functions
+from general_graphs import constants
 from objects_API.CoupleJ import CoupleJson
 from objects_API.StrainJ import StrainJson
 from objects_API.SpecieJ import SpecieJson
@@ -21,7 +21,7 @@ conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
 # Get all couples in a list
-list_of_couples = functions.getAllOfCouples()
+list_of_couples = general_functions.getAllOfCouples()
 bacterie_found = 0
 
 # Dictionnary {bacterie : nbr of bacteries}
@@ -178,7 +178,7 @@ axs[2].set_title('Family repartition in couples')
 axs[2].pie(number_of_family_tab, labels=family_name, autopct='%1.0f%%', startangle=140, textprops={'size': 20})
 
 
-source_data_list = functions.getAllOfSourceData()
+source_data_list = general_functions.getAllOfSourceData()
 source_data_dictionnary = {}
 
 for source_data in source_data_list:

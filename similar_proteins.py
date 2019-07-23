@@ -102,3 +102,4 @@ def getSimilarityProteinChain(list_of_tuples_grouped_by_organisms:list, index_of
                             final_list_of_list_of_couples[i-1].append(new_tuple)
 
     return final_list_of_list_of_couples
+ 
