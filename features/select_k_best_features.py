@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 
 import pandas as pd
 import numpy as np
@@ -11,7 +11,7 @@ from sklearn.feature_selection import chi2
 from sklearn.ensemble import ExtraTreesClassifier
 import matplotlib.pyplot as plt
 
-data = pd.read_csv("../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv")
+data = pd.read_csv("../Bacterium_id_5190")
 X = data.iloc[1:,1:31]   # Features
 y = data.iloc[1:,0]      # Target column i.e price range
 # k is the number of features you want to select

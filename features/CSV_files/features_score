@@ -1,0 +1,31 @@
+    Features         Score
+25      WEIGHT (Da)  8.152059e+07
+27        ISO POINT  2.685562e+04
+26      AROMATICITY  4.698282e+02
+1         MEAN_AA_A  3.012398e-01
+2         MEAN_AA_K  1.935165e-01
+10        MEAN_AA_N  1.752360e-01
+18        MEAN_AA_R  1.465053e-01
+3         MEAN_AA_I  1.372260e-01
+14        MEAN_AA_Y  1.252535e-01
+15        MEAN_AA_P  9.195465e-02
+5         MEAN_AA_G  7.358728e-02
+19        MEAN_AA_C  4.955519e-02
+11        MEAN_AA_F  4.483767e-02
+9         MEAN_AA_L  4.353237e-02
+4         MEAN_AA_E  4.191662e-02
+12        MEAN_AA_W  3.399641e-02
+13        MEAN_AA_Q  3.250307e-02
+8         MEAN_AA_V  2.744455e-02
+16        MEAN_AA_T  2.366752e-02
+6         MEAN_AA_S  2.350778e-02
+0         MEAN_AA_M  2.278011e-02
+17        MEAN_AA_H  1.677124e-02
+7         MEAN_AA_D  1.608255e-02
+28        MEAN_AA_X  4.704014e-03
+24        MEAN_CE_S  2.325316e-03
+21        MEAN_CE_N  2.142643e-03
+22        MEAN_CE_C  8.302359e-04
+23        MEAN_CE_O  3.197673e-04
+29  MEAN_CE_Unknown  2.353114e-04
+20        MEAN_CE_H  9.510230e-05
