@@ -63,7 +63,7 @@ class DomainJson(object):
         """
         schema = DomainSchema(only=['designation'])
         json_domain = schema.dump(self)
-        resultsCreation = DomainAPI().setDomain(jsonData = json_domain)
+        resultsCreation = DomainAPI().setDomain(jsonData = json_domain.data)
         schema = DomainSchema()
         results = schema.load(resultsCreation)
-        return results
+        return results[0]

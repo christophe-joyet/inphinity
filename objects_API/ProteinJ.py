@@ -121,25 +121,3 @@ class ProteinJson(object):
         schema = ProteinSchema()
         results = schema.load(results_proteins_list_json, many = True)
         return results
-
-    def getProteinByFilterParameter(dict_parameters:dict):
-        """
-        get a list of proteins given a filters by fields E.G: dict['organism']=10
-        return all proteinPfam with the level at 1
-
-        :param dict_parameters: dictionary that contain the fields and values to filter
-
-        :type dict_parameters: dictionary
-
-        :return: a json of the protein
-        :rtype: list[proteinJson]
-        """
-        url_parameters = ''
-        for key_param in dict_parameters:
-            url_parameters += key_param + '=' + str(dict_parameters[key_param]) + '&'
-
-        url_parameters = url_parameters[:-1]
-        list_protein = ProteinAPI().getProteinsByParameters(url_parameters)
-        schema = ProteinSchema()
-        results = schema.load(list_protein, many=True)
-        return results

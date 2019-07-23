@@ -131,4 +131,4 @@ class CoupleJson(object):
         list_couple = CoupleAPI().getCouplesByParameters(url_parameters)
         schema = CoupleSchema()
         results = schema.load(list_couple, many=True)
-        return results
+        return results[0]
