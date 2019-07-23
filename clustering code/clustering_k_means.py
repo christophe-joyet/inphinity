@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -14,7 +14,7 @@ from mpl_toolkits.mplot3d import Axes3D  # noqa: F401 unused import
 
 from features import features_functions
 
-csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'
+csv_file = './features/CSV_files/features_70_phages_clear_lysis.csv'
 matrix_of_features = []
 organisms_designation = []
 n_clusters = 9  # Number of clusters

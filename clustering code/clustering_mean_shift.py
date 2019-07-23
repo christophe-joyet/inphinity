@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
-sys.path.insert(0, '../inphinity')
+sys.path.insert(0, './')
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -15,7 +15,7 @@ from sklearn.decomposition import PCA # Using for features exctraction
 
 from features import features_functions
 
-csv_file = '../../extraction_features/AA_CE_WEIGHT_ARO_ISO/features_70_phages_clear_lysis.csv'  # Take data from csv file
+csv_file = './features/CSV_files/features_70_phages_clear_lysis.csv'  # Take data from csv file
 matrix_of_features = []
 organisms_designation = []
 
