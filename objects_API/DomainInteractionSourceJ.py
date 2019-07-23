@@ -66,10 +66,10 @@ class DomainInteractionSourceJson(object):
         """
         schema = DomainInteractionSourceSchema(only=['date_creation','domain_interaction','information_source'])
         json_domain = schema.dump(self)
-        resultsCreation = DomainInteractionSourceAPI().setDomainInteractionSource(jsonData = json_domain.data)
+        resultsCreation = DomainInteractionSourceAPI().setDomainInteractionSource(jsonData = json_domain)
         schema = DomainInteractionSourceSchema()
         results = schema.load(resultsCreation)
-        return results[0]
+        return results
 
 
     def verifyDDIpairSourceExistence(id_ddi:int, id_source:int):
@@ -89,6 +89,29 @@ class DomainInteractionSourceJson(object):
         results_DDI = DomainInteractionSourceAPI().getIdDDISource(id_ddi = id_ddi, id_source = id_source)
         id_ddi = results_DDI['id_ddi_iteract_source']
         return id_ddi
+
+
+    def getDomainInteractionSourceByFilterParameter(dict_parameters:dict):
+        """
+        get a list of domains interactions sources given a filters by fields E.G: dict['domain_interaction']=10
+        return all domain interaction source for the  domains pair id n 10
+
+        :param dict_parameters: dictionary that contain the fields and values to filter
+
+        :type dict_parameters: dictionary
+
+        :return: a json of the domain interaction source
+        :rtype: list[DomainInteractionSourceJ]
+        """
+        url_parameters = ''
+        for key_param in dict_parameters:
+            url_parameters += key_param + '=' + str(dict_parameters[key_param]) + '&'
+
+        url_parameters = url_parameters[:-1]
+        list_domains_interact_source = DomainInteractionSourceAPI().getIdDDISByParameters(url_parameters)
+        schema = DomainInteractionSourceSchema()
+        results = schema.load(list_domains_interact_source, many=True)
+        return results
 
     def __str__(self):
         """
