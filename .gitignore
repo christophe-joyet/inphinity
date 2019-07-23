@@ -477,3 +477,10 @@ ASALocalRun/
 .vs/slnx.sqlite
 *.sqlite
 test_rest.py
+
+*.sqlite
+
+3did_flat_Mar_10_2019_UTF.dat.txt
+3did_flat_Mar_10_2019_UTF.dat_cp.txt
+3did_flat_Mar_10_2019_UTF_only_ids.txt
+*.sqlite

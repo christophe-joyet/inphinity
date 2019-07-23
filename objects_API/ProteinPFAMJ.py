@@ -112,4 +112,4 @@ class ProteinPFAMJson(object):
         list_proteinPfam = ProteinPFAMAPI().getProteinsPFAMByParameters(url_parameters)
         schema = ProteinPFAMSchema()
         results = schema.load(list_proteinPfam, many=True)
-        return results[0]
+        return results

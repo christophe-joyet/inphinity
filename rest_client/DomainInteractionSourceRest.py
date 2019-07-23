@@ -63,3 +63,21 @@ class DomainInteractionSourceAPI(object):
 
         result_get = GetRest(function = self.function).performRequest()
         return result_get
+
+    def getIdDDISByParameters(self, url_parameters:str):
+        """
+        return the ddis objects by according the parameters you send
+
+        :param url_parameters: string that contains the parameters values (that design the fields)
+
+        :type url_parameters: str
+
+        :return: json file with all the data
+        :rtype: string (json format)
+        """
+
+
+        self.function += '?' + url_parameters
+
+        result_get = GetRest(function = self.function).performRequest()
+        return result_get

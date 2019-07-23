@@ -68,10 +68,10 @@ class DomainInteractionPairJson(object):
         """
         schema = DomainInteractionPairSchema(only=['domain_a','domain_b'])
         json_domain = schema.dump(self)
-        resultsCreation = DomainInteractionPairAPI().setDomainInteractionPair(jsonData = json_domain.data)
+        resultsCreation = DomainInteractionPairAPI().setDomainInteractionPair(jsonData = json_domain)
         schema = DomainInteractionPairSchema()
         results = schema.load(resultsCreation)
-        return results[0]
+        return results
 
     def verifyDDIpairExistence(pfam_a:str, pfam_b:str):
         """
@@ -88,5 +88,17 @@ class DomainInteractionPairJson(object):
         """
 
         results_DDI = DomainInteractionPairAPI().getIdDDI(pfam_a = pfam_a, pfam_b = pfam_b)
+        id_ddi = results_DDI['id_ddi_interaction']
+        return id_ddi
+
+    def verifyDDIpairExistenceID(self):
+        """
+        verify if the ddi pair already exists in the database based on these ids and return it's ID or -1 in case of inexistence
+
+        :return: id of the ddi or -1
+        :rtype: int
+        """
+
+        results_DDI = DomainInteractionPairAPI().getIdDDIID(pfam_a_id = self.domain_a, pfam_b_id = self.domain_b)
         id_ddi = results_DDI['id_ddi_interaction']
         return id_ddi

@@ -64,3 +64,23 @@ class DomainInteractionPairAPI(object):
 
         result_get = GetRest(function = self.function).performRequest()
         return result_get
+
+    def getIdDDIID(self, pfam_a_id:int, pfam_b_id:int):
+        """
+        verify if a ddi already exists given the PFAM a and PFAM B (it verify the reverse)
+
+        :param pfam_a_id: ID PFAM domain A
+        :param pfam_b_id: ID PFAM domain A
+
+        :type pfam_a_id: int
+        :type pfam_b_id: int
+
+        :return: json file with the last domain created
+        :rtype: string (json format)
+        """
+
+
+        self.function += 'ddi_existence_id/' + str(pfam_a_id) + '/' + str(pfam_b_id)
+
+        result_get = GetRest(function = self.function).performRequest()
+        return result_get
