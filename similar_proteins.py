@@ -11,7 +11,7 @@ conf_obj = ConfigurationAPI()
 conf_obj.load_data_from_ini()
 AuthenticationAPI().createAutenthicationToken()
 
-def getSimilarProt(organism_id_list:list, similarity_min=0.15, similarity_max=1.0):
+def getSimilarProt(organism_id_list:list, similarity_min=0.9, similarity_max=1.0):
     """
     | Get the proteins who create the similarity inside a groupe of organisms
 
@@ -60,7 +60,7 @@ def getSimilarProt(organism_id_list:list, similarity_min=0.15, similarity_max=1.
     
     return list_of_list_of_tuples_grouped_by_organisms
 
-def getSimilarityProteinChain(list_of_tuples_grouped_by_organisms:list, index_of_organisms:int, similarity_min=0.70, similarity_max=1.0):
+def getSimilarityProteinChain(list_of_tuples_grouped_by_organisms:list, index_of_organisms:int, similarity_min=0.9, similarity_max=1.0):
     """
     | Find the similar protein sequences in a group of organism
 

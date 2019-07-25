@@ -34,3 +34,9 @@ for i, txt in enumerate(organisms_designation):
     plt.annotate(txt, (matrix_of_features_embedded[i,0],matrix_of_features_embedded[i,1]))
 
 plt.show()  # Display the graphic
+
+# Source : 
+# Pathak Manish, 2018. t-SNE: The effect of various perplexity values on the shape. 
+# DataCamp [en ligne]. 
+# [Consulté le 20 juillet 2019]. Disponible à l'adresse : 
+# https://www.datacamp.com/community/tutorials/introduction-t-sne
